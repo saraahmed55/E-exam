@@ -65,4 +65,12 @@ class StudentController extends Controller
 
         return response()->json($exams, 200);
     }
+
+    public function getExamQuestions($studentcode, $examid){
+
+    }
+
+    public function PostExam(Request $request){
+
+    }
 }
