@@ -15,7 +15,7 @@ class CreateStudentsTable extends Migration
             $table->string('student_code')->unique();
             $table->string('first_name');
             $table->string('last_name');
-            $table->foreignIdFor(Level_subjects::class);
+            $table->string('level');
             $table->foreignIdFor(Department::class);
             $table->string('email')->unique();
             $table->string('password');
