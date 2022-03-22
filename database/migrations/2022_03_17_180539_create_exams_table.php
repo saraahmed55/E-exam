@@ -17,7 +17,9 @@ class CreateExamsTable extends Migration
         Schema::create('exams', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Subject::class);
-            $table->dateTimeTz('time', $precision = 0);
+            $table->dateTimeTz('start_time', $precision = 0);
+            $table->dateTimeTz('end_time', $precision = 0);
+            $table->integer('duration_minutes');
             $table->timestamps();
         });
     }
