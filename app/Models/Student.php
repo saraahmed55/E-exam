@@ -22,7 +22,7 @@ class Student extends Authenticatable
         'first_name',
         'last_name',
         'email',
-        'level_subjects_id',
+        'level',
         'department_id',
         'password',
     ];

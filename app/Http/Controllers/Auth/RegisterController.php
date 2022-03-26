@@ -35,7 +35,7 @@ class RegisterController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name'=> 'required|string|max:255',
             'student_code'=>'required|min:6',
-            'level_subjects_id'=>'required',
+            'level'=>'required',
             'department_id'=>'required',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
@@ -44,12 +44,13 @@ class RegisterController extends Controller
 
     public function showstudentRegisterForm()
     {
-        return view('auth.register', ['url' => 'student']);
+        return response()->json( 'register student',200);
     }
 
     public function showprofessorRegisterForm()
     {
-        return view('auth.register', ['url' => 'professor']);
+
+        return response()->json( 'register professor',200);
     }
 
 
@@ -60,7 +61,7 @@ class RegisterController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'student_code'=>$request->student_code,
-            'level_subjects_id'=>$request->level_subjects_id,
+            'level'=>$request->level,
             'department_id'=>$request->department_id,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -78,6 +79,6 @@ class RegisterController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        return redirect()->intended('login/professor');
+        return response()->json( 'created proffesor',200);
     }
 }

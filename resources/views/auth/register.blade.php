@@ -71,12 +71,12 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="level_subjects_id" class="col-md-4 col-form-label text-md-end">{{ __('level_subjects_id') }}</label>
+                            <label for="level" class="col-md-4 col-form-label text-md-end">{{ __('level') }}</label>
 
                             <div class="col-md-6">
-                                <input id="level_subjects_id" type="text" class="form-control @error('level_subjects_id') is-invalid @enderror" name="level_subjects_id" value="{{ old('level_subjects_id') }}" required autocomplete="level_subjects_id" autofocus>
+                                <input id="level" type="text" class="form-control @error('level') is-invalid @enderror" name="level" value="{{ old('level') }}" required autocomplete="level" autofocus>
 
-                                @error('level_subjects_id')
+                                @error('level')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

@@ -29,7 +29,7 @@ class LoginController extends Controller
 
     public function showstudentLoginForm()
     {
-        return view('auth.login',['url'=>'student']);
+        return response()->json( 'login student',200);
     }
 
     public function StudentLogin(Request $request)
@@ -51,7 +51,7 @@ class LoginController extends Controller
 
     public function showprofessorLoginForm()
     {
-        return view('auth.login', ['url' => 'professor']);
+        return response()->json( 'login proffesor',200);
     }
 
 
@@ -64,7 +64,7 @@ class LoginController extends Controller
 
         if(Auth::guard('professor')->attempt(['email' => $request->email, 'password' => $request->password]))
         {
-          return redirect()->intended('/professor');
+           return response()->json( 'login proffesor',200);
         }
         return back()->withInput($request->only('email','remember'));
 
