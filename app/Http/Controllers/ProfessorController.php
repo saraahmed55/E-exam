@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Exams;
 use App\Models\Professor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+
 
 class ProfessorController extends Controller
 {
@@ -41,5 +44,25 @@ class ProfessorController extends Controller
         return response()->json($subjects, 200);
     }
 
-    
+
+    public function getProfessorSubjectExams($prof_code, $subjectid){
+
+        date_default_timezone_set('Africa/Cairo');
+        $exams = DB::table('exams')->select('id as exam_id', 'start_time', 'end_time', 'duration_minutes')->where('subject_id', $subjectid)->get();
+
+        if(is_null($exams)){
+            return response()->json('No Exams Found', 404);
+        }
+
+        return response()->json($exams, 200);
+    }
+
+    public function showprofessorCreateExamForm(){
+
+        return response()->json( 'create exam',200);
+    }
+
+
+   
+
 }

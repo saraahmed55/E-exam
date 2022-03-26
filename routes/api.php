@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ExamsController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ProfessorController;
 
@@ -39,10 +40,11 @@ Route::get('/students/{studentcode}/subject/{subjectid}/exams', [StudentControll
 
 Route::get('/professors/{prof_code}/info', [ProfessorController::class,'getProfessorInfo']);
 Route::get('/professors/{prof_code}/subjects', [ProfessorController::class,'getProfessorSubjects']);
+Route::get('/professors/{prof_code}/subject/{subjectid}/exams', [ProfessorController::class,'getProfessorSubjectExams']);
+Route::get('/professors/{prof_code}/subject/{subjectid}/exams/{examid}', [ProfessorController::class,'showprofessorCreateExamForm']);
 
 
-
-
+Route::post('/professors/{prof_code}/subject/{subjectid}/createexam', [ExamsController::class,'createExam']);
 
 
 

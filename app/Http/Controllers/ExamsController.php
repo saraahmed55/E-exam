@@ -4,82 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Exams;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ExamsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+
+    public function createExam(Request $request){
+        
+        $exam=new Exams();
+        $exam->subject_id=$request->subject_id;
+        $exam->start_time=$request->start_time;
+        $exam->end_time=$request->end_time;
+        $exam->duration_minutes=$request->duration_minutes;
+        if($exam->save()) {
+            return ['status'=>'data inserted'];
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Exams  $exams
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Exams $exams)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Exams  $exams
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Exams $exams)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Exams  $exams
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Exams $exams)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Exams  $exams
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Exams $exams)
-    {
-        //
-    }
 }
