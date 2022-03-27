@@ -7,43 +7,31 @@ use Illuminate\Http\Request;
 
 class ChaptersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
-        //
+        $chapter=new Chapters();
+        $chapter->chapter_number=$request->chapter_number;
+        $chapter->chapter_name=$request->chapter_name;
+        $chapter->subject_id=$request->subject_id;
+        if($chapter->save()) {
+            return ['status'=>'data inserted'];
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Chapters  $chapters
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Chapters $chapters)
     {
         //

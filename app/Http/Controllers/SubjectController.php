@@ -35,7 +35,11 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $subject=new Subject();
+        $subject->name=$request->name;
+        if($subject->save()) {
+            return ['status'=>'data inserted'];
+        }
     }
 
     /**

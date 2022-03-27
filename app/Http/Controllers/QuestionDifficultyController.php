@@ -7,54 +7,33 @@ use Illuminate\Http\Request;
 
 class QuestionDifficultyController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $questionDiffculty=new Question_difficulty();
+        $questionDiffculty->name=$request->name;
+        $questionDiffculty->difficulty=$request->difficulty;
+        if($questionDiffculty->save()) {
+            return ['status'=>'data inserted'];
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Question_difficulty  $question_difficulty
-     * @return \Illuminate\Http\Response
-     */
     public function show(Question_difficulty $question_difficulty)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Question_difficulty  $question_difficulty
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Question_difficulty $question_difficulty)
     {
         //
