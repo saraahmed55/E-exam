@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\Exams;
+use App\Models\Student_result;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
@@ -74,6 +77,39 @@ class StudentController extends Controller
     }
 
     public function PostExam(Request $request){
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+            'exams_id' => 'required',
+            'result'=> 'required|numeric'
+        ]);
+        if($validator->fails()){
+            return response()->json('Can not save the result', 400);
+        }
+        $student_id = DB::table('students')->select('id')->where('id', $request->student_id)->first();
 
+        if(is_null($student_id)){
+            return response()->json('Student Not Found', 404);
+        }
+        $exam_id = DB::table('exams')->select('id')->where('id', $request->exams_id)->first();
+
+        if(is_null($exam_id)){
+            return response()->json('Exam Not Found', 404);
+        }
+
+        $previous_results = DB::table('student_results')->select('student_id', 'exams_id','result')
+        ->where('exams_id', $request->exams_id)->where('student_id', $request->student_id)->get();
+        if(!is_null($previous_results) && $previous_results->count()){
+            return response()->json('Student have previous results in this exam', 400);
+        }
+
+        $result = DB::table('student_results')->upsert([
+            'student_id' => $request->student_id,
+            'exams_id' => $request->exams_id,
+            'result' => $request->result
+        ], ['student_id', 'exams_id'], ['result']);
+        if($result == 0){
+            return response()->json('Can not save the result', 500);
+        }
+        return response()->json('Saved Successfully', 200);
     }
 }

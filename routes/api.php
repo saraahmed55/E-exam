@@ -40,6 +40,7 @@ Route::get('/students/{studentcode}/info', [StudentController::class,'getStudent
 Route::get('/students/{studentcode}/subjects', [StudentController::class,'getStudentSubjects']);
 Route::get('/students/{studentcode}/subject/{subjectid}/results', [StudentController::class,'getStudentSubjectResults']);
 Route::get('/students/{studentcode}/subject/{subjectid}/exams', [StudentController::class,'getStudentSubjectExams']);
+Route::post('/students/{studentcode}/saveresult', [StudentController::class,'PostExam']);
 
 
 Route::get('/professors/{prof_code}/info', [ProfessorController::class,'getProfessorInfo']);
