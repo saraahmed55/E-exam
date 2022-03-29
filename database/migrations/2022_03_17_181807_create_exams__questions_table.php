@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Exams;
 use App\Models\Chapters;
 use App\Models\Question_difficulty;
 use App\Models\Question_types;
@@ -18,9 +19,10 @@ class CreateExamsQuestionsTable extends Migration
     {
         Schema::create('exams__questions', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Exams::class);
             $table->foreignIdFor(Chapters::class);
-            $table->foreignIdFor(Question_types::class);
-            $table->foreignIdFor(Question_difficulty::class);
+            $table->enum('type', ['mcq','true or false']);
+            $table->enum('difficulty', ['easy','medium', 'hard']);
             $table->integer('Question_number');
             $table->timestamps();
         });

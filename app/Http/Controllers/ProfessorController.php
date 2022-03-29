@@ -7,10 +7,88 @@ use App\Models\Professor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 
 class ProfessorController extends Controller
 {
+
+    public function index(){
+        $professors = DB::table('professors')
+        ->select('id', 'prof_code', 'first_name', 'last_name','email')->get();
+        if(is_null($professors) || !$professors->count()){
+            return response()->json('No Professors Found', 404);
+        }
+
+        return response()->json($professors, 200);
+    }
+
+    public function show($professor_id){
+        $professor =  DB::table('professors')
+        ->select('id', 'prof_code', 'first_name', 'last_name','email')
+        ->where('id', $professor_id)->first();
+        if(is_null($professor)){
+            return response()->json('Professor not Found', 404);
+        }
+        return response()->json($professor, 200);
+    }
+
+    public function store(Request $request){
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:255',
+            'last_name'=> 'required|string|max:255',
+            'prof_code'=>'required|min:6',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
+        ]);
+        if($validator->fails()){
+            return response()->json('Can not Add the Professor', 400);
+        }
+        $professor = Professor::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'prof_code'=>$request->prof_code,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+            return response()->json('Added Successfully', 200);
+    }
+
+    public function update(Request $request, $professor_id){
+        $validator = Validator::make($request->all(), [
+            'prof_code'=> 'required',
+            'first_name'=> 'required',
+            'last_name'=> 'required',
+            'email'=> 'required|email',
+            'password'=> 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json('Can not Edit the professor', 400);
+        }
+
+        $professor= Professor::find($professor_id);
+        if(is_null($professor)){
+            return response()->json('Professor not Found', 404);
+        }
+        $professor->prof_code = $request->prof_code;
+        $professor->first_name = $request->first_name;
+        $professor->last_name = $request->last_name;
+        $professor->email = $request->email;
+        $professor->password = Hash::make($request->password);
+        if($professor->save()) {
+            return response()->json('Updated Successfully', 200);
+        }
+        return response()->json('Can not Edit the Professor', 400);
+    }
+
+    public function destroy($professor_id){
+        $professor= Professor::find($professor_id);
+        if(is_null($professor)){
+            return response()->json('Professor not Found', 404);
+        }
+        $professor->delete();
+        return response()->json('Deleted Successfully', 200);
+    }
 
 
     public function getProfessorInfo($prof_code) {

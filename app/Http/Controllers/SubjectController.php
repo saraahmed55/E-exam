@@ -3,38 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subject;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SubjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+
+    public function index(){
+        $subjects = DB::table('subjects')->select('id', 'name')->get();
+        if(is_null($subjects) || !$subjects->count()){
+            return response()->json('No Subjects Found', 404);
+        }
+
+        return response()->json($subjects, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
+    public function store(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+        ]);
+        if($validator->fails()){
+            return response()->json('Can not Add the Subject', 400);
+        }
         $subject=new Subject();
         $subject->name=$request->name;
         if($subject->save()) {
@@ -42,48 +33,40 @@ class SubjectController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Subject  $subject
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Subject $subject)
-    {
-        //
+    public function show($subject_id){
+        $subject = DB::table('subjects')->select('id', 'name')
+        ->where('id', $subject_id)->first();
+        if(is_null($subject)){
+            return response()->json('Subject Not Found', 404);
+        }
+        return response()->json($subject, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Subject  $subject
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Subject $subject)
-    {
-        //
+    public function update(Request $request, $subject_id){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+        ]);
+        if($validator->fails()){
+            return response()->json('Can not Edit the Subject', 400);
+        }
+
+        $subject= Subject::find($subject_id);
+        if(is_null($subject)){
+            return response()->json('Subject not Found', 404);
+        }
+        $subject->name = $request->name;
+        if($subject->save()) {
+            return response()->json('Updated Successfully', 200);
+        }
+        return response()->json('Can not Edit the Subject', 400);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Subject  $subject
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Subject $subject)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Subject  $subject
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Subject $subject)
-    {
-        //
+    public function destroy($subject_id){
+        $subject= Subject::find($subject_id);
+        if(is_null($subject)){
+            return response()->json('Subject not Found', 404);
+        }
+        $subject->delete();
+        return response()->json('Deleted Successfully', 200);
     }
 }
