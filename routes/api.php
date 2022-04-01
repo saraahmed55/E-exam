@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\DepartmentsController;
+use App\Http\Controllers\StudentResultController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -70,6 +71,9 @@ Route::put('/admin/editdepartment/{department_id}', [DepartmentsController::clas
 Route::delete('/admin/deletedepartment/{department_id}', [DepartmentsController::class,'destroy']);
 
 Route::get('/admin/exams', [ExamsController::class,'index']);
+Route::get('/admin/subjects/{subject_id}/exams', [ExamsController::class,'getExamsBySubject']);
+Route::get('/admin/results', [StudentResultController::class,'getAvgResults']);
+
 
 Route::get('/admin/students', [StudentController::class,'index']);
 Route::get('/admin/students/{student_id}', [StudentController::class,'show']);

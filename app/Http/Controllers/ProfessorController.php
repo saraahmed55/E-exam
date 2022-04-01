@@ -37,12 +37,12 @@ class ProfessorController extends Controller
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name'=> 'required|string|max:255',
-            'prof_code'=>'required|min:6',
-            'email' => 'required|string|email|max:255|unique:users',
+            'prof_code'=>'required|min:6|unique:professors',
+            'email' => 'required|string|email|max:255|unique:professors',
             'password' => 'required|string|min:6',
         ]);
         if($validator->fails()){
-            return response()->json('Can not Add the Professor', 400);
+            return response()->json($validator->errors(), 400);
         }
         $professor = Professor::create([
             'first_name' => $request->first_name,

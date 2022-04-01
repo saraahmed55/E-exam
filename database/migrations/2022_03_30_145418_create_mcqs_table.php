@@ -1,13 +1,11 @@
 <?php
 
 use App\Models\Chapters;
-use App\Models\Question_difficulty;
-use App\Models\Question_types;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateQuestionsTable extends Migration
+class CreateMcqsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,12 +14,16 @@ class CreateQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('mcqs', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Chapters::class);
-            $table->enum('type', ['mcq','true or false']);
             $table->enum('difficulty', ['easy','medium', 'hard']);
             $table->string('question_text');
+            $table->string('answer1');
+            $table->string('answer2');
+            $table->string('answer3');
+            $table->string('answer4');
+            $table->enum('CorrectAnswer', ['answer1','answer2', 'answer3', 'answer4']);
             $table->timestamps();
         });
     }
@@ -33,6 +35,6 @@ class CreateQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('mcqs');
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Question;
+use App\Models\Chapters;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateQuestionsAnswersTable extends Migration
+class CreateTrueOrFalsesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +14,12 @@ class CreateQuestionsAnswersTable extends Migration
      */
     public function up()
     {
-        Schema::create('questions_answers', function (Blueprint $table) {
-            $table->foreignIdFor(Question::class);
+        Schema::create('true_or_falses', function (Blueprint $table) {
             $table->id();
-            $table->string('answer_text');
-            $table->boolean('isTrue');
+            $table->foreignIdFor(Chapters::class);
+            $table->enum('difficulty', ['easy','medium', 'hard']);
+            $table->string('question_text');
+            $table->enum('CorrectAnswer', ['true','false']);
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateQuestionsAnswersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions_answers');
+        Schema::dropIfExists('true_or_falses');
     }
 }

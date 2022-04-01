@@ -4,82 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Student_result;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StudentResultController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+   public function getAvgResults(){
+       $avg = DB::table('student_results')->selectRaw('exams_id, avg(result) as avg_result')->groupBy('exams_id')->get();
+       if(!is_null($avg) && $avg->count()){
+        $subjectsavg = collect();
+        foreach($avg as $average){
+            $subject = DB::table('exams')->leftJoin('subjects', 'exams.subject_id', '=', 'subjects.id')
+            ->select('name')->where('exams.id', $average->exams_id)->first();
+            $avgobject = [
+                'subject'=> $subject->name,
+                'exams_id' => $average->exams_id,
+                'average_result' => $average->avg_result
+            ];
+            $subjectsavg->push($avgobject);
+           }
+           return response()->json($subjectsavg, 200);
+       }
+       return response()->json('results not found', 404);
+   }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Student_result  $student_result
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Student_result $student_result)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Student_result  $student_result
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Student_result $student_result)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Student_result  $student_result
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Student_result $student_result)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Student_result  $student_result
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Student_result $student_result)
-    {
-        //
-    }
 }

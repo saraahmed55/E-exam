@@ -33,4 +33,15 @@ class ExamsController extends Controller
         return response()->json($exams, 200);
     }
 
+    public function getExamsBySubject($subject_id){
+
+        $exams = DB::table('exams')->join('subjects', 'subjects.id', '=', 'exams.subject_id')
+        ->select('exams.id as exam_id', 'start_time', 'end_time', 'duration_minutes')
+        ->where('exams.subject_id', $subject_id)->get();
+        if(is_null($exams) || !$exams->count()){
+            return response()->json('No Exams Found', 404);
+        }
+
+        return response()->json($exams, 200);
+    }
 }
