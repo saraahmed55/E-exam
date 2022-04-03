@@ -16,7 +16,7 @@ class CreateTrueOrFalsesTable extends Migration
     {
         Schema::create('true_or_falses', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Chapters::class);
+            $table->foreignIdFor(Chapters::class)->onDelete('cascade');
             $table->enum('difficulty', ['easy','medium', 'hard']);
             $table->string('question_text');
             $table->enum('CorrectAnswer', ['true','false']);

@@ -18,7 +18,7 @@ class CreateChaptersTable extends Migration
             $table->id();
             $table->integer('chapter_number');
             $table->string('chapter_name');
-            $table->foreignIdFor(Subject::class);
+            $table->foreignIdFor(Subject::class)->onDelete('cascade');
             $table->timestamps();
         });
     }

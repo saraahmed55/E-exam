@@ -16,7 +16,7 @@ class CreateExamsTable extends Migration
     {
         Schema::create('exams', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Subject::class);
+            $table->foreignIdFor(Subject::class)->onDelete('cascade');
             $table->dateTimeTz('start_time', $precision = 0);
             $table->dateTimeTz('end_time', $precision = 0);
             $table->integer('duration_minutes');

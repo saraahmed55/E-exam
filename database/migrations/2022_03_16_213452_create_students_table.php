@@ -16,7 +16,7 @@ class CreateStudentsTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('level');
-            $table->foreignIdFor(Department::class);
+            $table->foreignIdFor(Department::class)->onDelete('cascade');
             $table->string('email')->unique();
             $table->string('password');
             $table->timestamps();

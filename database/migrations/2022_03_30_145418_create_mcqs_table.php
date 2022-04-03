@@ -16,7 +16,7 @@ class CreateMcqsTable extends Migration
     {
         Schema::create('mcqs', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Chapters::class);
+            $table->foreignIdFor(Chapters::class)->onDelete('cascade');
             $table->enum('difficulty', ['easy','medium', 'hard']);
             $table->string('question_text');
             $table->string('answer1');

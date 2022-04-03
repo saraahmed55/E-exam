@@ -19,9 +19,9 @@ class CreateLevelSubjectsTable extends Migration
         Schema::create('level_subjects', function (Blueprint $table) {
             $table->id();
             $table->string('level');
-            $table->foreignIdFor(Department::class);
-            $table->foreignIdFor(Subject::class);
-            $table->foreignIdFor(Professor::class);
+            $table->foreignIdFor(Department::class)->onDelete('cascade');
+            $table->foreignIdFor(Subject::class)->onDelete('cascade');
+            $table->foreignIdFor(Professor::class)->onDelete('cascade');
             $table->timestamps();
         });
     }

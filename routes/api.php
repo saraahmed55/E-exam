@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminRoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,10 @@ use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\DepartmentsController;
+use App\Http\Controllers\McqController;
 use App\Http\Controllers\StudentResultController;
+use App\Http\Controllers\TrueOrFalseController;
+use App\Models\AdminRole;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -55,7 +59,8 @@ Route::get('/professors/{prof_code}/subject/{subjectid}/students/{studentcode}/r
 
 Route::post('/professors/{prof_code}/subject/{subjectid}/createexam', [ExamsController::class,'createExam']);
 Route::post('/professors/{prof_code}/subject/{subjectid}/createchapter', [ChaptersController::class,'store']);
-Route::post('/professors/{prof_code}/subject/{subjectid}/createquestions', [QuestionController::class,'store']);
+Route::post('/professors/{prof_code}/subject/{subjectid}/createquestions/mcq', [McqController::class,'store']);
+Route::post('/professors/{prof_code}/subject/{subjectid}/createquestions/t&f', [TrueOrFalseController::class,'store']);
 Route::post('/professors/{prof_code}/subject/{subjectid}/createsujects', [SubjectController::class,'store']);
 
 
@@ -74,6 +79,9 @@ Route::get('/admin/exams', [ExamsController::class,'index']);
 Route::get('/admin/subjects/{subject_id}/exams', [ExamsController::class,'getExamsBySubject']);
 Route::get('/admin/results', [StudentResultController::class,'getAvgResults']);
 
+Route::get('/admin/user_roles', [AdminRoleController::class,'index']);
+Route::get('/admin/user_roles/{role_id}', [AdminRoleController::class,'show']);
+Route::put('/admin/editprofessorrole/{professor_id}', [AdminRoleController::class,'update']);
 
 Route::get('/admin/students', [StudentController::class,'index']);
 Route::get('/admin/students/{student_id}', [StudentController::class,'show']);

@@ -1,12 +1,11 @@
 <?php
 
-use App\Models\Student;
-use App\Models\Exams;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStudentResultsTable extends Migration
+class CreateRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,12 +14,12 @@ class CreateStudentResultsTable extends Migration
      */
     public function up()
     {
-        Schema::create('student_results', function (Blueprint $table) {
-            $table->foreignIdFor(Student::class)->onDelete('cascade');
-            $table->foreignIdFor(Exams::class)->onDelete('cascade');
-            $table->integer('result');
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
             $table->timestamps();
         });
+
     }
 
     /**
@@ -30,6 +29,6 @@ class CreateStudentResultsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('student_results');
+        Schema::dropIfExists('roles');
     }
 }

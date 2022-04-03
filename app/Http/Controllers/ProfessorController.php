@@ -82,6 +82,7 @@ class ProfessorController extends Controller
     }
 
     public function destroy($professor_id){
+        
         $professor= Professor::find($professor_id);
         if(is_null($professor)){
             return response()->json('Professor not Found', 404);
@@ -160,23 +161,6 @@ class ProfessorController extends Controller
     }
 
 
-    // $department_id = DB::table('level_subjects')->select('department_id')->where('subject_id', $subjectid)->get();
-
-    // if(is_null($department_id)){
-    //     return response()->json('department Not Found', 404);
-    // }
-
-
-    // //  $students=DB::table('students')->select('id', 'student_code','first_name')->where('department_id',$department_id->department_id)->get();
-
-    // // $students = DB::table('level_subjects')->join('students', 'students.department_id', '=', 'level_subjects.department_id')
-    // // ->select( 'students.student_code')->where('department_id',$department_id->department_id)->get();
-
-    // // if(is_null($students)){
-    // //     return response()->json('No Results Found', 404);
-    // // }
-
-    // return response()->json($department_id, 200);
 
 
    public function getStudentSubjectResults($prof_code,$studentcode, $subjectid){
