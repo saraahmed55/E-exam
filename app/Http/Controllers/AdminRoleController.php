@@ -49,5 +49,30 @@ class AdminRoleController extends Controller
         }
         return response()->json('Can not Edit the Professor', 400);
     }
+    public function getProfessorRole($professor_id){
+
+        $professor =  DB::table('professors')
+        ->select('id', 'roles_id')
+        ->where('id', $professor_id)->first();
+        if(is_null($professor)){
+            return response()->json('Professor not Found', 404);
+        }
+        return response()->json();
+    }
+    public function getProfessorsOfRole($role_id){
+
+        if( is_null($role_id)){
+            return response()->json('No Roles Found', 404);
+        }
+
+        $professors = DB::table('professors')->join('roles', 'roles.id', '=', 'professors.roles_id')
+        ->select('professors.id','professors.first_name','professors.last_name','professors.prof_code','professors.email')->where('roles_id',$role_id)->get();
+
+        if(is_null($professors) || !$professors->count()){
+            return response()->json('No Professors Found', 404);
+        }
+
+        return response()->json($professors, 200);
+    }
 
 }

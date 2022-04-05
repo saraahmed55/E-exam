@@ -56,8 +56,7 @@ class DepartmentsController extends Controller
     }
 
 
-    public function destroy($department_id)
-    {
+    public function destroy($department_id){
         $department= Department::find($department_id);
         if(is_null($department)){
             return response()->json('Department not Found', 404);

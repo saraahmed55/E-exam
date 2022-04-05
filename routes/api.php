@@ -17,6 +17,7 @@ use App\Http\Controllers\McqController;
 use App\Http\Controllers\StudentResultController;
 use App\Http\Controllers\TrueOrFalseController;
 use App\Models\AdminRole;
+use App\Models\Department;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -70,6 +71,14 @@ Route::post('/admin/addsubject', [SubjectController::class,'store']);
 Route::put('/admin/editsubject/{subject_id}', [SubjectController::class,'update']);
 Route::delete('/admin/deletesubject/{subject_id}', [SubjectController::class,'destroy']);
 
+Route::get('/admin/questionsmcq', [McqController::class,'index']);
+Route::post('/admin/addquestionsmcq', [McqController::class,'store']);
+Route::delete('/admin/deletemcqquestion/{mcq_id}', [McqController::class,'destroy']);
+
+Route::get('/admin/questionstorf', [TrueOrFalseController::class,'index']);
+Route::post('/admin/addquestionstorf', [TrueOrFalseController::class,'store']);
+Route::delete('/admin/deletetorfquestion/{mcq_id}', [TrueOrFalseController::class,'destroy']);
+
 Route::get('/admin/departments', [DepartmentsController::class,'index']);
 Route::post('/admin/adddepartment', [DepartmentsController::class,'store']);
 Route::put('/admin/editdepartment/{department_id}', [DepartmentsController::class,'update']);
@@ -81,6 +90,8 @@ Route::get('/admin/results', [StudentResultController::class,'getAvgResults']);
 
 Route::get('/admin/user_roles', [AdminRoleController::class,'index']);
 Route::get('/admin/user_roles/{role_id}', [AdminRoleController::class,'show']);
+Route::get('/admin/user_roles/{role_id}/professors', [AdminRoleController::class,'getProfessorsOfRole']);
+Route::get('/admin/getProfessorRole', [AdminRoleController::class,'getProfessorRole']);
 Route::put('/admin/editprofessorrole/{professor_id}', [AdminRoleController::class,'update']);
 
 Route::get('/admin/students', [StudentController::class,'index']);
