@@ -40,11 +40,12 @@ class LoginController extends Controller
             'password'=>'required|min:6'
         ]);
 
-        if(Auth::guard('student')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember')))
+        if(Auth::guard('student')->attempt(['email' => $request->email, 'password' => $request->password]))
         {
-            return redirect()->intended('/student');
+            return response()->json( 'login Student',200);
+            // redirect()->intended('/student');
         }
-        return back()->withInput($request->only('email','remember'));
+        return back()->withInput($request->only('email'));
 
 
     }
