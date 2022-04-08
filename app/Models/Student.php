@@ -7,16 +7,14 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Department;
+use App\Models\Student_result;
+
 
 class Student extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
     protected $table='students';
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'student_code',
         'first_name',
@@ -26,23 +24,21 @@ class Student extends Authenticatable
         'department_id',
         'password',
     ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function student_results()
+    {
+        return $this->hasMany(Student_result::class, 'student_id');
+    }
 }

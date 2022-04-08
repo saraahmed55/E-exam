@@ -24,8 +24,8 @@ class StudentController extends Controller
     }
 
     public function show($student_id){
-        $student =  DB::table('students')->
-        select('id', 'student_code', 'first_name', 'last_name', 'level','department_id','email')
+        $student =  DB::table('students')->join('departments', 'departments.id', '=', 'students.department_id')
+        ->select('students.id', 'student_code', 'first_name', 'last_name', 'level','department_id', 'departments.name', 'email')
         ->where('id', $student_id)->first();
         if(is_null($student)){
             return response()->json('Student not Found', 404);
@@ -111,7 +111,7 @@ class StudentController extends Controller
         }
 
         $subjects = DB::table('level_subjects')->join('subjects', 'subjects.id', '=', 'level_subjects.subject_id')
-        ->select('subjects.id', 'subjects.name')
+        ->select('subjects.id as id', 'subjects.name as name')
         ->where('level', $level->level)->where('department_id', $department->department_id)->get();
 
         if(is_null($subjects) || !$subjects->count()){

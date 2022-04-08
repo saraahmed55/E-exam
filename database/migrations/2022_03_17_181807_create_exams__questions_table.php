@@ -18,9 +18,10 @@ class CreateExamsQuestionsTable extends Migration
     public function up()
     {
         Schema::create('exams__questions', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
-            $table->foreignIdFor(Exams::class)->onDelete('cascade');
-            $table->foreignIdFor(Chapters::class)->onDelete('cascade');
+            $table->foreignIdFor(Exams::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Chapters::class)->constrained()->onDelete('cascade');
             $table->enum('type', ['mcq','true or false']);
             $table->enum('difficulty', ['easy','medium', 'hard']);
             $table->integer('Question_number');

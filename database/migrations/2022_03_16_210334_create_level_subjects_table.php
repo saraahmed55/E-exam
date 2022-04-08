@@ -17,11 +17,12 @@ class CreateLevelSubjectsTable extends Migration
     public function up()
     {
         Schema::create('level_subjects', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->string('level');
-            $table->foreignIdFor(Department::class)->onDelete('cascade');
-            $table->foreignIdFor(Subject::class)->onDelete('cascade');
-            $table->foreignIdFor(Professor::class)->onDelete('cascade');
+            $table->foreignIdFor(Department::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Subject::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Professor::class)->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

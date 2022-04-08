@@ -25,7 +25,7 @@ class ExamsController extends Controller
     public function index(){
 
         $exams = DB::table('exams')->join('subjects', 'subjects.id', '=', 'exams.subject_id')
-        ->select('exams.id as exam_id', 'subjects.name', 'start_time', 'end_time', 'duration_minutes')->get();
+        ->select('exams.id as exam_id', 'subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')->get();
         if(is_null($exams) || !$exams->count()){
             return response()->json('No Exams Found', 404);
         }

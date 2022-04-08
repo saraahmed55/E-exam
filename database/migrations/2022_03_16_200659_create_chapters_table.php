@@ -15,10 +15,11 @@ class CreateChaptersTable extends Migration
     public function up()
     {
         Schema::create('chapters', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->integer('chapter_number');
             $table->string('chapter_name');
-            $table->foreignIdFor(Subject::class)->onDelete('cascade');
+            $table->foreignIdFor(Subject::class)->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

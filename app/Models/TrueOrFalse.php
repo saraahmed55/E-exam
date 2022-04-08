@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Chapters;
 
 class TrueOrFalse extends Model
 {
@@ -14,4 +15,9 @@ class TrueOrFalse extends Model
         'question_text',
         'CorrectAnswer'
     ];
+
+    public function chapter()
+    {
+        return $this->belongsTo(Chapters::class, 'chapters_id');
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Chapters;
 
 class Mcq extends Model
 {
@@ -18,4 +19,9 @@ class Mcq extends Model
         'answer4',
         'CorrectAnswer'
     ];
+
+    public function chapter()
+    {
+        return $this->belongsTo(Chapters::class, 'chapters_id');
+    }
 }

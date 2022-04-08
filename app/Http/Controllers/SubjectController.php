@@ -66,7 +66,7 @@ class SubjectController extends Controller
         if(is_null($subject)){
             return response()->json('Subject not Found', 404);
         }
-        $subject->delete();
+        $subject->Delete();
         return response()->json('Deleted Successfully', 200);
     }
 }

@@ -15,13 +15,14 @@ class CreateProfessorsTable extends Migration
     public function up()
     {
         Schema::create('professors', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->string('prof_code')->unique();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->foreignIdFor(Roles::class)->default(2)->onDelete('cascade');
+            $table->foreignIdFor(Roles::class)->default(2)->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

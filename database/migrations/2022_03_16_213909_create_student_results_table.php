@@ -16,8 +16,9 @@ class CreateStudentResultsTable extends Migration
     public function up()
     {
         Schema::create('student_results', function (Blueprint $table) {
-            $table->foreignIdFor(Student::class)->onDelete('cascade');
-            $table->foreignIdFor(Exams::class)->onDelete('cascade');
+            $table->engine = 'InnoDB';
+            $table->foreignIdFor(Student::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Exams::class)->constrained()->onDelete('cascade');
             $table->integer('result');
             $table->timestamps();
         });
