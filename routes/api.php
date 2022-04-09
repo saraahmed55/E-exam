@@ -89,6 +89,10 @@ Route::get('/admin/subjects/{subject_id}/exams', [ExamsController::class,'getExa
 Route::get('/admin/results', [StudentResultController::class,'getAvgResults']);
 
 Route::get('/admin/user_roles', [AdminRoleController::class,'index']);
+Route::get('/admin/user_roles/admins', [ProfessorController::class,'getAdminProfessors']);
+Route::get('/admin/user_roles/professors', [ProfessorController::class,'getProfessorProfessors']);
+Route::get('/admin/user_roles/toadmin/{id}', [ProfessorController::class,'changeToAdmin']);
+Route::get('/admin/user_roles/toprofessor/{id}', [ProfessorController::class,'changeToProfessor']);
 Route::get('/admin/user_roles/{role_id}', [AdminRoleController::class,'show']);
 Route::get('/admin/user_roles/{role_id}/professors', [AdminRoleController::class,'getProfessorsOfRole']);
 Route::get('/admin/getProfessorRole', [AdminRoleController::class,'getProfessorRole']);

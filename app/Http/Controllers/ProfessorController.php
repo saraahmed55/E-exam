@@ -82,7 +82,7 @@ class ProfessorController extends Controller
     }
 
     public function destroy($professor_id){
-        
+
         $professor= Professor::find($professor_id);
         if(is_null($professor)){
             return response()->json('Professor not Found', 404);
@@ -165,20 +165,64 @@ class ProfessorController extends Controller
 
    public function getStudentSubjectResults($prof_code,$studentcode, $subjectid){
 
-    $studentid = DB::table('students')->select('id')->where('student_code', $studentcode)->first();
+        $studentid = DB::table('students')->select('id')->where('student_code', $studentcode)->first();
 
-    if(is_null($studentid)){
-        return response()->json('Student Not Found', 404);
+        if(is_null($studentid)){
+            return response()->json('Student Not Found', 404);
+        }
+
+        $results = DB::table('student_results')->join('exams', 'exams.id', '=', 'student_results.exams_id')
+        ->select('exams.id as exam_id', 'result')->where('student_id', $studentid->id)->where('subject_id', $subjectid)->get();
+
+        if(is_null($results) || !$results->count()){
+            return response()->json('No Results Found', 404);
+        }
+
+        return response()->json($results, 200);
     }
 
-    $results = DB::table('student_results')->join('exams', 'exams.id', '=', 'student_results.exams_id')
-    ->select('exams.id as exam_id', 'result')->where('student_id', $studentid->id)->where('subject_id', $subjectid)->get();
+    public function getAdminProfessors(){
+        $admins = DB::table('professors')->select('id', 'first_name', 'last_name')->where('roles_id', 1)->get();
 
-    if(is_null($results) || !$results->count()){
-        return response()->json('No Results Found', 404);
+        if(is_null($admins) || !$admins->count()){
+            return response()->json('No Admins Found', 404);
+        }
+
+        return response()->json($admins, 200);
     }
 
-    return response()->json($results, 200);
-}
+    public function getProfessorProfessors(){
+        $professors = DB::table('professors')->select('id', 'first_name', 'last_name')->where('roles_id', 2)->get();
+
+        if(is_null($professors) || !$professors->count()){
+            return response()->json('No Professors Found', 404);
+        }
+
+        return response()->json($professors, 200);
+    }
+
+    public function changeToAdmin($id){
+        $professor= Professor::find($id);
+        if(is_null($professor)){
+            return response()->json('Professor not Found', 404);
+        }
+        $professor->roles_id = 1;
+        if($professor->save()) {
+            return response()->json('Updated Successfully', 200);
+        }
+        return response()->json('Can not Edit the Professor Role', 400);
+    }
+
+    public function changeToProfessor($id){
+        $professor= Professor::find($id);
+        if(is_null($professor)){
+            return response()->json('Professor not Found', 404);
+        }
+        $professor->roles_id = 2;
+        if($professor->save()) {
+            return response()->json('Updated Successfully', 200);
+        }
+        return response()->json('Can not Edit the Professor Role', 400);
+    }
 
 }
