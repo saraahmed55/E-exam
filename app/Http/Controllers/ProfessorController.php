@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Exams;
 use App\Models\Professor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -26,6 +27,16 @@ class ProfessorController extends Controller
     public function show($professor_id){
         $professor =  DB::table('professors')
         ->select('id', 'prof_code', 'first_name', 'last_name','email')
+        ->where('id', $professor_id)->first();
+        if(is_null($professor)){
+            return response()->json('Professor not Found', 404);
+        }
+        return response()->json($professor, 200);
+    }
+
+    public function showId($professor_id){
+        $professor =  DB::table('professors')
+        ->select('id')
         ->where('id', $professor_id)->first();
         if(is_null($professor)){
             return response()->json('Professor not Found', 404);
@@ -104,6 +115,19 @@ class ProfessorController extends Controller
         return response()->json($info, 200);
     }
 
+
+    public function getProfessorcode($email) {
+
+        $info = DB::table('professors')
+        ->select('prof_code')
+        ->where('email', $email)->first();
+
+        if(is_null($info)){
+            return response()->json('No Information Found', 404);
+        }
+
+        return response()->json($info, 200);
+    }
 
     public function getProfessorSubjects($prof_code){
 

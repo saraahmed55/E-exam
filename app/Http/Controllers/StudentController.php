@@ -22,10 +22,19 @@ class StudentController extends Controller
         }
         return response()->json($students, 200);
     }
+    public function getByID($student_id){
+        $student =  DB::table('students')
+        ->select('students.id', 'student_code', 'first_name', 'last_name', 'level','department_id', 'email')
+        ->where('id', $student_id)->first();
+        if(is_null($student)){
+            return response()->json('Student not Found', 404);
+        }
+        return response()->json($student, 200);
+    }
 
     public function show($student_id){
         $student =  DB::table('students')->join('departments', 'departments.id', '=', 'students.department_id')
-        ->select('students.id', 'student_code', 'first_name', 'last_name', 'level','department_id', 'departments.name', 'email')
+        ->select('students.id', 'student_code', 'first_name', 'last_name', 'level','department_id', 'email')
         ->where('id', $student_id)->first();
         if(is_null($student)){
             return response()->json('Student not Found', 404);
@@ -69,7 +78,7 @@ class StudentController extends Controller
             'email'=> 'required|email',
             'level' => 'required',
             'department_id' => 'required',
-            'password'=> 'required'
+
         ]);
         if($validator->fails()){
             return response()->json('Can not Edit the student', 400);
@@ -85,7 +94,7 @@ class StudentController extends Controller
         $student->email = $request->email;
         $student->level = $request->level;
         $student->department_id = $request->department_id;
-        $student->password = Hash::make($request->password);
+        // $student->password = Hash::make($request->password);
         if($student->save()) {
             return response()->json('Updated Successfully', 200);
         }

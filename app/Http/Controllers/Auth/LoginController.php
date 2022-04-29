@@ -43,7 +43,6 @@ class LoginController extends Controller
         if(Auth::guard('student')->attempt(['email' => $request->email, 'password' => $request->password]))
         {
             return response()->json( 'login Student',200);
-            // redirect()->intended('/student');
         }
         return back()->withInput($request->only('email'));
 

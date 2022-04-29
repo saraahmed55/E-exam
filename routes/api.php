@@ -49,6 +49,7 @@ Route::post('/students/{studentcode}/saveresult', [StudentController::class,'Pos
 
 
 Route::get('/professors/{prof_code}/info', [ProfessorController::class,'getProfessorInfo']);
+Route::get('/professors/{email}', [ProfessorController::class,'getProfessorcode']);
 Route::get('/professors/{prof_code}/subjects', [ProfessorController::class,'getProfessorSubjects']);
 Route::get('/professors/{prof_code}/subject/{subjectid}/exams', [ProfessorController::class,'getProfessorSubjectExams']);
 Route::get('/professors/{prof_code}/subject/{subjectid}/exams/{examid}', [ProfessorController::class,'showprofessorCreateExamForm']);
@@ -99,10 +100,12 @@ Route::get('/admin/getProfessorRole', [AdminRoleController::class,'getProfessorR
 Route::put('/admin/editprofessorrole/{professor_id}', [AdminRoleController::class,'update']);
 
 Route::get('/admin/students', [StudentController::class,'index']);
-Route::get('/admin/students/{student_id}', [StudentController::class,'show']);
+// Route::get('/admin/students/{student_code}', [StudentController::class,'getStudentInfo']);
 Route::post('/admin/addstudent', [StudentController::class,'store']);
+Route::get('/admin/students/{student_id}', [StudentController::class,'getByID']);
 Route::put('/admin/editstudent/{student_id}', [StudentController::class,'update']);
 Route::delete('/admin/deletestudent/{student_id}', [StudentController::class,'destroy']);
+
 
 Route::get('/admin/professors', [ProfessorController::class,'index']);
 Route::get('/admin/professors/{professor_id}', [ProfessorController::class,'show']);
