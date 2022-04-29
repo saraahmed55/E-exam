@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use phpDocumentor\Reflection\Types\This;
 use SebastianBergmann\Environment\Console;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -42,7 +43,10 @@ class LoginController extends Controller
 
         if(Auth::guard('student')->attempt(['email' => $request->email, 'password' => $request->password]))
         {
-            return response()->json( 'login Student',200);
+            $student =  DB::table('students')
+            ->select('id', 'student_code','email')
+            ->where('email', $request->email)->first();
+            return response()->json( $student,200);
         }
         return back()->withInput($request->only('email'));
 
@@ -64,7 +68,14 @@ class LoginController extends Controller
 
         if(Auth::guard('professor')->attempt(['email' => $request->email, 'password' => $request->password]))
         {
-           return response()->json( 'login proffesor',200);
+            $professor =  DB::table('professors')->join('roles', 'roles.id', '=', 'professors.roles_id')
+            ->select('professors.id', 'prof_code','email', 'roles.name as role_name')
+            ->where('email', $request->email)->first();
+            if(is_null($professor)){
+                return response()->json('Professor not Found', 404);
+            }
+            return response()->json($professor, 200);
+        //    return response()->json( 'login proffesor',200);
         }
         return back()->withInput($request->only('email','remember'));
 
