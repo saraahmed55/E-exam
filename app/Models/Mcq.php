@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Difficulty;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Chapters;
@@ -19,6 +20,7 @@ class Mcq extends Model
         'answer4',
         'CorrectAnswer'
     ];
+
 
     public function chapter()
     {

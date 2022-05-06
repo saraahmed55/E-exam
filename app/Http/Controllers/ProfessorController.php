@@ -24,15 +24,17 @@ class ProfessorController extends Controller
         return response()->json($professors, 200);
     }
 
-    public function show($professor_id){
+    public function getByID($professor_id){
         $professor =  DB::table('professors')
-        ->select('id', 'prof_code', 'first_name', 'last_name','email')
+        ->select('professors.id', 'prof_code', 'first_name', 'last_name', 'roles_id', 'email','password')
         ->where('id', $professor_id)->first();
         if(is_null($professor)){
             return response()->json('Professor not Found', 404);
         }
         return response()->json($professor, 200);
     }
+
+
 
     public function showId($professor_id){
         $professor =  DB::table('professors')
@@ -43,6 +45,7 @@ class ProfessorController extends Controller
         }
         return response()->json($professor, 200);
     }
+
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
@@ -64,6 +67,7 @@ class ProfessorController extends Controller
         ]);
             return response()->json('Added Successfully', 200);
     }
+
 
     public function update(Request $request, $professor_id){
         $validator = Validator::make($request->all(), [
@@ -92,6 +96,7 @@ class ProfessorController extends Controller
         return response()->json('Can not Edit the Professor', 400);
     }
 
+
     public function destroy($professor_id){
 
         $professor= Professor::find($professor_id);
@@ -116,6 +121,7 @@ class ProfessorController extends Controller
     }
 
 
+
     public function getProfessorcode($email) {
 
         $info = DB::table('professors')
@@ -128,6 +134,7 @@ class ProfessorController extends Controller
 
         return response()->json($info, 200);
     }
+
 
     public function getProfessorSubjects($prof_code){
 
@@ -165,6 +172,16 @@ class ProfessorController extends Controller
         return response()->json( 'create exam',200);
     }
 
+    public function getProfessorSubjectChapters($prof_code, $subjectid){
+
+        $chapters = DB::table('chapters')->select('id as chapter_id', 'chapter_number', 'chapter_name')->where('subject_id', $subjectid)->get();
+
+        if(is_null($chapters)){
+            return response()->json('No Chapters Found', 404);
+        }
+
+        return response()->json($chapters, 200);
+    }
 
    public function getStudentsOfSubjects($prof_code,$subjectid){
 
@@ -175,7 +192,7 @@ class ProfessorController extends Controller
         }
 
         $students = DB::table('level_subjects')->join('students', 'students.level', '=', 'level_subjects.level')
-        ->select('students.student_code')->where('subject_id',$subjectid)->where('professor_id',$prof_id->id)->get();
+        ->select('students.id','students.student_code','students.first_name','students.last_name')->where('subject_id',$subjectid)->where('professor_id',$prof_id->id)->get();
 
         if(is_null($students) || !$students->count()){
             return response()->json('No Students Found', 404);
@@ -183,8 +200,6 @@ class ProfessorController extends Controller
 
         return response()->json($students, 200);
     }
-
-
 
 
    public function getStudentSubjectResults($prof_code,$studentcode, $subjectid){

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Roles;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RolesController extends Controller
 {
@@ -14,7 +15,12 @@ class RolesController extends Controller
      */
     public function index()
     {
-        //
+        $roles = DB::table('roles')->select('id', 'name')->get();
+        if(is_null($roles) || !$roles->count()){
+            return response()->json('No Roles Found', 404);
+        }
+
+        return response()->json($roles, 200);
     }
 
     /**

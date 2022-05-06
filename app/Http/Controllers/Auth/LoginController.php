@@ -75,7 +75,7 @@ class LoginController extends Controller
                 return response()->json('Professor not Found', 404);
             }
             return response()->json($professor, 200);
-        //    return response()->json( 'login proffesor',200);
+        
         }
         return back()->withInput($request->only('email','remember'));
 

@@ -19,6 +19,15 @@ class DepartmentsController extends Controller
         return response()->json($departments, 200);
     }
 
+    public function getByID($department_id){
+        $department =  DB::table('departments')
+        ->select('departments.id','name')
+        ->where('id', $department_id)->first();
+        if(is_null($department)){
+            return response()->json('department not Found', 404);
+        }
+        return response()->json($department, 200);
+    }
 
     public function store(Request $request)
     {

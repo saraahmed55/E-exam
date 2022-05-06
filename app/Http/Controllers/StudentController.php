@@ -22,9 +22,10 @@ class StudentController extends Controller
         }
         return response()->json($students, 200);
     }
+
     public function getByID($student_id){
         $student =  DB::table('students')
-        ->select('students.id', 'student_code', 'first_name', 'last_name', 'level','department_id', 'email')
+        ->select('students.id', 'student_code', 'first_name', 'last_name', 'level','department_id', 'email','password')
         ->where('id', $student_id)->first();
         if(is_null($student)){
             return response()->json('Student not Found', 404);
@@ -71,18 +72,6 @@ class StudentController extends Controller
     }
 
     public function update(Request $request, $student_id){
-        $validator = Validator::make($request->all(), [
-            'student_code'=> 'required',
-            'first_name'=> 'required',
-            'last_name'=> 'required',
-            'email'=> 'required|email',
-            'level' => 'required',
-            'department_id' => 'required',
-
-        ]);
-        if($validator->fails()){
-            return response()->json('Can not Edit the student', 400);
-        }
 
         $student= Student::find($student_id);
         if(is_null($student)){
@@ -93,12 +82,12 @@ class StudentController extends Controller
         $student->last_name = $request->last_name;
         $student->email = $request->email;
         $student->level = $request->level;
-        $student->department_id = $request->department_id;
-        // $student->password = Hash::make($request->password);
+        $student->department_id = $request->department_id?? '';
+        $student->password = Hash::make($request->password);
         if($student->save()) {
             return response()->json('Updated Successfully', 200);
         }
-        return response()->json('Can not Edit the student', 400);
+        return response()->json('Can not Edit the student last', 400);
     }
 
     public function destroy($student_id){

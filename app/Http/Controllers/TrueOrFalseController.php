@@ -30,7 +30,7 @@ class TrueOrFalseController extends Controller
         }
     }
 
-    public function destroy($mcq_id)
+    public function destroy($prof_code,$subject_id,$chapter_id,$mcq_id)
     {
         $true_or_falses= TrueOrFalse::find($mcq_id);
         if(is_null($true_or_falses)){
