@@ -78,11 +78,7 @@ class LoginController extends Controller
             $prof = Professor::where('email', $request->email)->first();
             $token = auth()->guard('professor')->user()->createToken($request->email)->plainTextToken;
             $professor =  DB::table('professors')->join('roles', 'roles.id', '=', 'professors.roles_id')
-<<<<<<< HEAD
             ->select(['professors.id', 'prof_code','email', 'roles.name as role_name', DB::raw("'$token' as token")])
-=======
-            ->select('professors.id','first_name', 'last_name','prof_code','email', 'roles.name as role_name')
->>>>>>> a993ecf5f7b2e0cbb07a806cb867772faedae3d1
             ->where('email', $request->email)->first();
             if(is_null($professor)){
                 return response()->json('Professor not Found', 404);
@@ -94,16 +90,9 @@ class LoginController extends Controller
 
 
     }
-<<<<<<< HEAD
-
-    // public function logout(Request $request)
-    // {
-    //     $user = Auth::user();
-    //     $user->tokens()->delete();
-    // }
-=======
     public function logout(){
+        //     $user = Auth::user();
+        //     $user->tokens()->delete();
         Auth::logout();
     }
->>>>>>> a993ecf5f7b2e0cbb07a806cb867772faedae3d1
 }
