@@ -16,7 +16,14 @@ class Exams extends Model
         'subject_id',
         'start_time',
         'end_time',
-        'duration_minutes'
+        'duration_minutes',
+        'mcq_easy_questionsNumber',
+        'mcq_medium_questionsNumber',
+        'mcq_hard_questionsNumber',
+        'tf_easy_questionsNumber',
+        'tf_medium_questionsNumber',
+        'tf_hard_questionsNumber',
+
     ];
 
     public function subject()

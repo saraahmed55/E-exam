@@ -69,16 +69,19 @@ class LoginController extends Controller
         if(Auth::guard('professor')->attempt(['email' => $request->email, 'password' => $request->password]))
         {
             $professor =  DB::table('professors')->join('roles', 'roles.id', '=', 'professors.roles_id')
-            ->select('professors.id', 'prof_code','email', 'roles.name as role_name')
+            ->select('professors.id','first_name', 'last_name','prof_code','email', 'roles.name as role_name')
             ->where('email', $request->email)->first();
             if(is_null($professor)){
                 return response()->json('Professor not Found', 404);
             }
             return response()->json($professor, 200);
-        
+
         }
         return back()->withInput($request->only('email','remember'));
 
 
+    }
+    public function logout(){
+        Auth::logout();
     }
 }

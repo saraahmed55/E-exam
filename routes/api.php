@@ -53,29 +53,37 @@ Route::get('/professors/{prof_code}/info', [ProfessorController::class,'getProfe
 Route::get('/professors/{email}', [ProfessorController::class,'getProfessorcode']);
 Route::get('/professors/{prof_code}/subjects', [ProfessorController::class,'getProfessorSubjects']);
 Route::get('/professors/{prof_code}/subject/{subjectid}/exams', [ProfessorController::class,'getProfessorSubjectExams']);
-Route::get('/professors/{prof_code}/subject/{subjectid}/exams/{examid}', [ProfessorController::class,'showprofessorCreateExamForm']);
+Route::get('/professors/{prof_code}/subject/{subjectid}/exams/{examId}/information', [ExamsController::class,'getExamsInformationBySubject']);
+
 
 Route::get('/professors/{prof_code}/subject/{subjectid}/chapters', [ProfessorController::class,'getProfessorSubjectChapters']);
+Route::get('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}', [ChaptersController::class,'getByID']);
+Route::put('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}/edit', [ChaptersController::class,'update']);
 Route::delete('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}', [ChaptersController::class,'destroy']);
 
 Route::get('/professors/{prof_code}/subject/{subjectid}/chapters/{chapters_id}/mcqs', [ChaptersController::class,'getChapterMCQ']);
-//////////////////////////////////////////////////////look
 Route::post('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}/createquestions/mcq', [McqController::class,'store']);
+Route::get('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}/mcqs/{question_id}', [McqController::class,'getByID']);
+Route::put('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}/mcqs/{question_id}/edit', [McqController::class,'update']);
 Route::delete('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}/mcqs/{mcq_id}', [McqController::class,'destroy']);
 
-
 Route::get('/professors/{prof_code}/subject/{subjectid}/chapters/{chapters_id}/torf', [ChaptersController::class,'getChapterTorF']);
+Route::get('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}/allQuestions', [ChaptersController::class,'getAllQuestions']);
+Route::post('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}/createquestions/t&f', [TrueOrFalseController::class,'store']);
+Route::get('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}/torf/{question_id}', [TrueOrFalseController::class,'getByID']);
+Route::put('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}/torf/{question_id}/edit', [TrueOrFalseController::class,'update']);
 Route::delete('/professors/{prof_code}/subject/{subjectid}/chapters/{chapter_id}/torf/{tf_id}', [TrueOrFalseController::class,'destroy']);
 
-////////////////////////////look
-Route::get('/professors/{prof_code}/subject/{subjectid}', [SubjectController::class,'subjectInfoDepartment']);
+Route::get('/professors/{prof_code}/subject/{subjectid}/departmentName', [SubjectController::class,'subjectInfoDepartment']);
+Route::get('/professors/{prof_code}/subject/{subjectid}', [SubjectController::class,'getSubjectName']);
+Route::get('/professors/{prof_code}/subject/{subjectid}/studentCount', [ProfessorController::class,'getStudentCountInSubject']);
 
 Route::get('/professors/{prof_code}/subject/{subjectid}/students', [ProfessorController::class,'getStudentsOfSubjects']);
 Route::get('/professors/{prof_code}/subject/{subjectid}/students/{studentcode}/results', [ProfessorController::class,'getStudentSubjectResults']);
+Route::get('/professors/{prof_code}/subject/{subjectid}/studentsResult', [ProfessorController::class,'getStudentResultsInExams']);
 
 Route::post('/professors/{prof_code}/subject/{subjectid}/createexam', [ExamsController::class,'createExam']);
 Route::post('/professors/{prof_code}/subject/{subjectid}/createchapter', [ChaptersController::class,'store']);
-Route::post('/professors/{prof_code}/subject/{subjectid}/createquestions/t&f', [TrueOrFalseController::class,'store']);
 Route::post('/professors/{prof_code}/subject/{subjectid}/createsujects', [SubjectController::class,'store']);
 
 
@@ -127,4 +135,4 @@ Route::post('/admin/addprofessor', [ProfessorController::class,'store']);
 Route::put('/admin/editprofessor/{professor_id}', [ProfessorController::class,'update']);
 Route::delete('/admin/deleteprofessor/{professor_id}', [ProfessorController::class,'destroy']);
 
-Route::get('logout', [LoginController::class,'logout']);
+Route::get('/logout', [LoginController::class,'logout']);
