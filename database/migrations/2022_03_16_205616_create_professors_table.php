@@ -23,6 +23,7 @@ class CreateProfessorsTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->foreignIdFor(Roles::class)->default(2)->constrained()->onDelete('cascade');
+            $table->rememberToken();
             $table->timestamps();
         });
     }

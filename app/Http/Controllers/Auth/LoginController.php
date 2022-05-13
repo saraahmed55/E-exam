@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use phpDocumentor\Reflection\Types\This;
 use SebastianBergmann\Environment\Console;
 use Illuminate\Support\Facades\DB;
+use App\Models\Professor;
+use App\Models\Student;
 
 class LoginController extends Controller
 {
@@ -43,9 +45,14 @@ class LoginController extends Controller
 
         if(Auth::guard('student')->attempt(['email' => $request->email, 'password' => $request->password]))
         {
+            $std = Student::where('email', $request->email)->first();
+            $token = auth()->guard('student')->user()->createToken($request->email)->plainTextToken;
             $student =  DB::table('students')
-            ->select('id', 'student_code','email')
+            ->select(['id', 'student_code','email', DB::raw("'$token' as token")])
             ->where('email', $request->email)->first();
+            if(is_null($student)){
+                return response()->json('Student not Found', 404);
+            }
             return response()->json( $student,200);
         }
         return back()->withInput($request->only('email'));
@@ -68,17 +75,25 @@ class LoginController extends Controller
 
         if(Auth::guard('professor')->attempt(['email' => $request->email, 'password' => $request->password]))
         {
+            $prof = Professor::where('email', $request->email)->first();
+            $token = auth()->guard('professor')->user()->createToken($request->email)->plainTextToken;
             $professor =  DB::table('professors')->join('roles', 'roles.id', '=', 'professors.roles_id')
-            ->select('professors.id', 'prof_code','email', 'roles.name as role_name')
+            ->select(['professors.id', 'prof_code','email', 'roles.name as role_name', DB::raw("'$token' as token")])
             ->where('email', $request->email)->first();
             if(is_null($professor)){
                 return response()->json('Professor not Found', 404);
             }
             return response()->json($professor, 200);
-        
+
         }
         return back()->withInput($request->only('email','remember'));
 
 
     }
+
+    // public function logout(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $user->tokens()->delete();
+    // }
 }

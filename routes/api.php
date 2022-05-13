@@ -25,6 +25,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Route::middleware('auth:professor')->group(function () {
+
+// });
+// Route::middleware('auth:student')->group(function () {
+
+// });
+
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -37,14 +44,18 @@ Route::get('/register/professor', [RegisterController::class,'showprofessorRegis
 
 Route::post('/login/student', [LoginController::class,'StudentLogin']);
 Route::post('/login/professor', [LoginController::class,'ProfessorLogin']);
+Route::post('/logout/student', [LoginController::class,'StudentLogout']);
+Route::post('/logout/professor', [LoginController::class,'logout']);
 Route::post('/register/student', [RegisterController::class,'createStudent']);
 Route::post('/register/professor', [RegisterController::class,'createProfessor']);
 
 
 Route::get('/students/{studentcode}/info', [StudentController::class,'getStudentInfo']);
 Route::get('/students/{studentcode}/subjects', [StudentController::class,'getStudentSubjects']);
+Route::get('/students/subjects/{subjectid}', [StudentController::class,'getSubjectDetails']);
 Route::get('/students/{studentcode}/subject/{subjectid}/results', [StudentController::class,'getStudentSubjectResults']);
 Route::get('/students/{studentcode}/subject/{subjectid}/exams', [StudentController::class,'getStudentSubjectExams']);
+Route::get('/students/{studentcode}/exams', [StudentController::class,'getStudentExams']);
 Route::get('/students/{studentcode}/getexam/{examid}', [StudentController::class,'getExamQuestions']);
 Route::post('/students/{studentcode}/saveresult', [StudentController::class,'PostExam']);
 

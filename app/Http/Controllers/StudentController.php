@@ -119,6 +119,20 @@ class StudentController extends Controller
         return response()->json($subjects, 200);
     }
 
+    public function getSubjectDetails($subjectid){
+        $subject = DB::table('level_subjects')
+        ->join('subjects', 'subjects.id', '=', 'level_subjects.subject_id')
+        ->join('professors', 'professors.id', '=', 'level_subjects.professor_id')
+        ->select('subjects.id as id', 'subjects.name as name', 'professors.first_name as prof_first_name', 'professors.last_name as prof_last_name')
+        ->where('level_subjects.subject_id', $subjectid)->first();
+
+        if(is_null($subject)){
+            return response()->json('Subject Not Found', 404);
+        }
+
+        return response()->json($subject, 200);
+    }
+
     public function getStudentInfo($studentcode) {
         $info = DB::table('students')->join('departments', 'departments.id', '=', 'students.department_id')
         ->select('student_code', 'first_name', 'last_name', 'email', 'level','departments.name as department_name')
@@ -150,8 +164,36 @@ class StudentController extends Controller
 
     public function getStudentSubjectExams($studentcode, $subjectid){
         date_default_timezone_set('Africa/Cairo');
-        $exams = DB::table('exams')->select('id as exam_id', 'start_time', 'end_time', 'duration_minutes')
+        $exams = DB::table('exams')->join('subjects', 'exams.subject_id', '=', 'subjects.id')
+        ->select('id as exam_id', 'subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')
         ->where('subject_id', $subjectid)->where('end_time', '>=', now())->get();
+
+        if(is_null($exams) || !$exams->count()){
+            return response()->json('No Exams Found', 404);
+        }
+
+        return response()->json($exams, 200);
+    }
+
+    public function getStudentExams($studentcode){
+        date_default_timezone_set('Africa/Cairo');
+        $level = DB::table('students')->select('level')->where('student_code', $studentcode)->first();
+
+        $department = DB::table('students')->select('department_id')->where('student_code', $studentcode)->first();
+
+        if(is_null($level) || is_null($department)){
+            return response()->json('No Exams Found', 404);
+        }
+
+        $exams = DB::table('level_subjects')->join('subjects', 'subjects.id', '=', 'level_subjects.subject_id')
+        ->join('exams', 'subjects.id', '=', 'exams.subject_id')
+        ->select('exams.id as exam_id', 'subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')
+        ->where('level', $level->level)->where('department_id', $department->department_id)
+        ->where('end_time', '>=', now())->get();
+
+        // $exams = DB::table('exams')->join('subjects', 'exams.subject_id', '=', 'subjects.id')
+        // ->select('id as exam_id', 'subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')
+        // ->where('subject_id', $subjectid)->where('end_time', '>=', now())->get();
 
         if(is_null($exams) || !$exams->count()){
             return response()->json('No Exams Found', 404);

@@ -20,6 +20,7 @@ class CreateStudentsTable extends Migration
             $table->foreignIdFor(Department::class)->constrained()->onDelete('cascade');
             $table->string('email')->unique();
             $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
         });
     }

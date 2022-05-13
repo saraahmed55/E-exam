@@ -36,15 +36,15 @@ class Handler extends ExceptionHandler
 
      protected function unauthenticated($request, AuthenticationException $exception)
      {
-        if($request->is('student')|| $request->is('admin/*'))
+        if($request->is('student')|| $request->is('student/*'))
         {
-            return redirect()->guest('/login/student');
+            return response()->json(['message'=>'unauthenticated'], 401);
         }
         if($request->is('professor')|| $request->is('professor/*'))
         {
-            return redirect()->guest('/login/professor');
+            return response()->json(['message'=>'unauthenticated'], 401);
         }
-        return redirect()->guest(route('login'));
+        return response()->json(['message'=>'unauthenticated'], 401);
      }
     public function register()
     {
