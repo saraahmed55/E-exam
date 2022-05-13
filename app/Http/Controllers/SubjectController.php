@@ -43,15 +43,23 @@ class SubjectController extends Controller
         return response()->json($subject, 200);
     }
 
-    public function subjectInfoDepartment($subject_id){
+    public function getSubjectName($prof_code,$subject_id){
 
-        // $dep=DB::table('level_subjects')->select('department_id')->where('subject_id',$subject_id)->first();
-        // if(is_null($dep)){
-        //     return response()->json('Subject Not Found', 404);
-        // }
-        $info=DB::table('departments')->select('name')->where('id',2)->first();
-        // $info = DB::table('level_subjects')->join('departments', 'departments.id', '=', 'level_subjects.department_id')
-        // ->select('departments.name')->where('subject_id',$subject_id)->get();
+        $subject=DB::table('subjects')->select('name')->where('id',$subject_id)->get();
+        if(is_null($subject)){
+            return response()->json('No Subjects Found', 404);
+        }
+        return response()->json($subject, 200);
+    }
+
+    public function subjectInfoDepartment($prof_code,$subject_id){
+
+        $dep=DB::table('level_subjects')->select('department_id')->where('subject_id',$subject_id)->first();
+        if(is_null($dep)){
+            return response()->json('Subject Not Found', 404);
+        }
+        $info = DB::table('level_subjects')->join('departments', 'departments.id', '=', 'level_subjects.department_id')
+        ->select('departments.name')->where('subject_id',$subject_id)->get();
 
         if(is_null($info) || !$info->count()){
             return response()->json('No info Found', 404);

@@ -46,7 +46,6 @@ class ProfessorController extends Controller
         return response()->json($professor, 200);
     }
 
-
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
@@ -167,10 +166,6 @@ class ProfessorController extends Controller
         return response()->json($exams, 200);
     }
 
-    public function showprofessorCreateExamForm(){
-
-        return response()->json( 'create exam',200);
-    }
 
     public function getProfessorSubjectChapters($prof_code, $subjectid){
 
@@ -201,8 +196,27 @@ class ProfessorController extends Controller
         return response()->json($students, 200);
     }
 
+    public function getStudentCountInSubject($prof_code,$subjectid){
 
-   public function getStudentSubjectResults($prof_code,$studentcode, $subjectid){
+        $prof_id=DB::table('professors')->select('id')->where('prof_code',$prof_code)->first();
+
+        if( is_null($prof_id)){
+            return response()->json('No Subjects Found', 404);
+        }
+
+        $students = DB::table('level_subjects')->join('students', 'students.level', '=', 'level_subjects.level')
+        ->select('students.id','students.student_code','students.first_name','students.last_name')->where('subject_id',$subjectid)->where('professor_id',$prof_id->id)->count();
+
+        if(is_null($students)){
+            return response()->json('No Students Found', 404);
+        }
+
+        return response()->json($students, 200);
+
+    }
+
+
+   public function getStudentSubjectResults($prof_code,$subjectid,$studentcode){
 
         $studentid = DB::table('students')->select('id')->where('student_code', $studentcode)->first();
 
@@ -219,6 +233,28 @@ class ProfessorController extends Controller
 
         return response()->json($results, 200);
     }
+
+
+
+    public function getStudentResultsInExams($prof_code,$subject_id){
+
+        $examsid = DB::table('exams')->select('id')->where('subject_id', $subject_id)->get();
+
+        if(is_null($examsid)){
+            return response()->json('Exam Not Found', 404);
+        }
+
+        $results = DB::table('student_results')->join('exams', 'exams.id', '=', 'student_results.exams_id')
+        ->select('student_id','result')->where('subject_id', $subject_id)->get();
+
+        $studentName=DB::table('students')->select('first_name','last_name')->where('id',$results)->get();
+        if(is_null($results) || !$results->count()){
+            return response()->json('No Results Found', 404);
+        }
+
+        return response()->json($results, 200);
+    }
+
 
     public function getAdminProfessors(){
         $admins = DB::table('professors')->select('id', 'first_name', 'last_name')->where('roles_id', 1)->get();

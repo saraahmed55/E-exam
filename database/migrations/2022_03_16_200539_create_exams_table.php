@@ -18,9 +18,15 @@ class CreateExamsTable extends Migration
             $table->engine = 'InnoDB';
             $table->id();
             $table->foreignIdFor(Subject::class)->constrained()->onDelete('cascade');
-            $table->dateTimeTz('start_time', $precision = 0);
-            $table->dateTimeTz('end_time', $precision = 0);
+            $table->dateTime('start_time', $precision = 0);
+            $table->dateTime('end_time', $precision = 0);
             $table->integer('duration_minutes');
+            $table->integer('mcq_easy_questionsNumber');
+            $table->integer('mcq_medium_questionsNumber');
+            $table->integer('mcq_hard_questionsNumber');
+            $table->integer('tf_easy_questionsNumber');
+            $table->integer('tf_medium_questionsNumber');
+            $table->integer('tf_hard_questionsNumber');
             $table->timestamps();
         });
     }
