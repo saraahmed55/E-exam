@@ -157,7 +157,22 @@ class ProfessorController extends Controller
     public function getProfessorSubjectExams($prof_code, $subjectid){
 
         date_default_timezone_set('Africa/Cairo');
-        $exams = DB::table('exams')->select('id as exam_id', 'start_time', 'end_time', 'duration_minutes')->where('subject_id', $subjectid)->get();
+        $exams = DB::table('exams')->select('id as exam_id','name', 'start_time', 'end_time', 'duration_minutes')->where('subject_id', $subjectid)->get();
+
+        if(is_null($exams)){
+            return response()->json('No Exams Found', 404);
+        }
+
+        return response()->json($exams, 200);
+    }
+
+    public function getProfessorExams($prof_code){
+
+        $prof_id=DB::table('professors')->select('id')->where('prof_code',$prof_code)->first();
+
+        date_default_timezone_set('Africa/Cairo');
+        $exams = DB::table('level_subjects')->join('exams', 'exams.subject_id', '=', 'level_subjects.subject_id')
+        ->select('exams.id as exam_id','exams.name')->where('level_subjects.professor_id',$prof_id->id)->get();
 
         if(is_null($exams)){
             return response()->json('No Exams Found', 404);
@@ -225,7 +240,7 @@ class ProfessorController extends Controller
         }
 
         $results = DB::table('student_results')->join('exams', 'exams.id', '=', 'student_results.exams_id')
-        ->select('exams.id as exam_id', 'result')->where('student_id', $studentid->id)->where('subject_id', $subjectid)->get();
+        ->select('exams.id as exam_id','exams.name as exam_name', 'result')->where('student_id', $studentid->id)->where('subject_id', $subjectid)->get();
 
         if(is_null($results) || !$results->count()){
             return response()->json('No Results Found', 404);

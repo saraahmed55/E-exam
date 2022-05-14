@@ -66,6 +66,8 @@ Route::get('/professors/{email}', [ProfessorController::class,'getProfessorcode'
 Route::get('/professors/{prof_code}/subjects', [ProfessorController::class,'getProfessorSubjects']);
 Route::get('/professors/{prof_code}/subject/{subjectid}/exams', [ProfessorController::class,'getProfessorSubjectExams']);
 Route::get('/professors/{prof_code}/subject/{subjectid}/exams/{examId}/information', [ExamsController::class,'getExamsInformationBySubject']);
+Route::get('/professors/{prof_code}/exams', [ProfessorController::class,'getProfessorExams']);
+Route::get('/professors/{prof_code}/exams/{examId}/information', [ExamsController::class,'getExamsInformation']);
 
 
 Route::get('/professors/{prof_code}/subject/{subjectid}/chapters', [ProfessorController::class,'getProfessorSubjectChapters']);
