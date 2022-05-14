@@ -17,9 +17,11 @@ class StudentController extends Controller
     public function index(){
         $students = DB::table('students')
         ->select('id', 'student_code', 'first_name', 'last_name', 'level','department_id','email')->get();
+
         if(is_null($students) || !$students->count()){
             return response()->json('No Students Found', 404);
         }
+
         return response()->json($students, 200);
     }
 
@@ -27,19 +29,11 @@ class StudentController extends Controller
         $student =  DB::table('students')
         ->select('students.id', 'student_code', 'first_name', 'last_name', 'level','department_id', 'email','password')
         ->where('id', $student_id)->first();
-        if(is_null($student)){
-            return response()->json('Student not Found', 404);
-        }
-        return response()->json($student, 200);
-    }
 
-    public function show($student_id){
-        $student =  DB::table('students')->join('departments', 'departments.id', '=', 'students.department_id')
-        ->select('students.id', 'student_code', 'first_name', 'last_name', 'level','department_id', 'email')
-        ->where('id', $student_id)->first();
         if(is_null($student)){
             return response()->json('Student not Found', 404);
         }
+
         return response()->json($student, 200);
     }
 
@@ -53,12 +47,14 @@ class StudentController extends Controller
             'email' => 'required|string|email|max:255|unique:students',
             'password' => 'required|string|min:6',
         ]);
+
         if($validator->fails()){
             return response()->json($validator->errors(), 400);
         }
 
         $email = DB::table('students')->
         select('email')->where('email', $request->email)->first();
+
         $student = Student::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -68,15 +64,18 @@ class StudentController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-            return response()->json('Added Successfully', 200);
+
+        return response()->json('Added Successfully', 200);
     }
 
     public function update(Request $request, $student_id){
 
         $student= Student::find($student_id);
+
         if(is_null($student)){
             return response()->json('Student not Found', 404);
         }
+
         $student->student_code = $request->student_code;
         $student->first_name = $request->first_name;
         $student->last_name = $request->last_name;
@@ -84,18 +83,23 @@ class StudentController extends Controller
         $student->level = $request->level;
         $student->department_id = $request->department_id?? '';
         $student->password = Hash::make($request->password);
+
         if($student->save()) {
             return response()->json('Updated Successfully', 200);
         }
+
         return response()->json('Can not Edit the student last', 400);
     }
 
     public function destroy($student_id){
         $student= Student::find($student_id);
+
         if(is_null($student)){
             return response()->json('Student not Found', 404);
         }
+
         $student->delete();
+
         return response()->json('Deleted Successfully', 200);
     }
 
@@ -110,7 +114,8 @@ class StudentController extends Controller
 
         $subjects = DB::table('level_subjects')->join('subjects', 'subjects.id', '=', 'level_subjects.subject_id')
         ->select('subjects.id as id', 'subjects.name as name')
-        ->where('level', $level->level)->where('department_id', $department->department_id)->get();
+        ->where('level', $level->level)
+        ->where('department_id', $department->department_id)->get();
 
         if(is_null($subjects) || !$subjects->count()){
             return response()->json('No Subjects Found', 404);
@@ -153,7 +158,27 @@ class StudentController extends Controller
         }
 
         $results = DB::table('student_results')->join('exams', 'exams.id', '=', 'student_results.exams_id')
-        ->select('exams.id as exam_id', 'result')->where('student_id', $studentid->id)->where('subject_id', $subjectid)->get();
+        ->select('exams.id as exam_id', 'exams.name as exam_name', 'result')->where('student_id', $studentid->id)
+        ->where('subject_id', $subjectid)->get();
+
+        if(is_null($results) || !$results->count()){
+            return response()->json('No Results Found', 404);
+        }
+
+        return response()->json($results, 200);
+    }
+
+    public function getStudentResults($studentcode){
+        $studentid = DB::table('students')->select('id')->where('student_code', $studentcode)->first();
+
+        if(is_null($studentid)){
+            return response()->json('Student Not Found', 404);
+        }
+
+        $results = DB::table('exams')->join('student_results', 'exams.id', '=', 'student_results.exams_id')
+        ->join('subjects', 'exams.subject_id', '=', 'subjects.id')
+        ->select('exams_id', 'exams.name as exams_name', 'subjects.name as subject', 'result')
+        ->where('student_id', $studentid->id)->get();
 
         if(is_null($results) || !$results->count()){
             return response()->json('No Results Found', 404);
@@ -163,10 +188,18 @@ class StudentController extends Controller
     }
 
     public function getStudentSubjectExams($studentcode, $subjectid){
+        $studentid = DB::table('students')->select('id')->where('student_code', $studentcode)->first();
+
+        if(is_null($studentid)){
+            return response()->json('Student Not Found', 404);
+        }
+
         date_default_timezone_set('Africa/Cairo');
+
         $exams = DB::table('exams')->join('subjects', 'exams.subject_id', '=', 'subjects.id')
-        ->select('id as exam_id', 'subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')
-        ->where('subject_id', $subjectid)->where('end_time', '>=', now())->get();
+        ->select('exams.id as exam_id', 'exams.name as exam_name', 'subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')
+        ->where('subject_id', $subjectid)->where('end_time', '>=', now())
+        ->whereNotIn('exams.id', Student_result::select('exams_id')->where('student_id', $studentid->id))->get();
 
         if(is_null($exams) || !$exams->count()){
             return response()->json('No Exams Found', 404);
@@ -176,7 +209,10 @@ class StudentController extends Controller
     }
 
     public function getStudentExams($studentcode){
+        $studentid = DB::table('students')->select('id')->where('student_code', $studentcode)->first();
+
         date_default_timezone_set('Africa/Cairo');
+
         $level = DB::table('students')->select('level')->where('student_code', $studentcode)->first();
 
         $department = DB::table('students')->select('department_id')->where('student_code', $studentcode)->first();
@@ -187,13 +223,10 @@ class StudentController extends Controller
 
         $exams = DB::table('level_subjects')->join('subjects', 'subjects.id', '=', 'level_subjects.subject_id')
         ->join('exams', 'subjects.id', '=', 'exams.subject_id')
-        ->select('exams.id as exam_id', 'subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')
+        ->select('exams.id as exam_id', 'exams.name as exam_name','subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')
         ->where('level', $level->level)->where('department_id', $department->department_id)
-        ->where('end_time', '>=', now())->get();
-
-        // $exams = DB::table('exams')->join('subjects', 'exams.subject_id', '=', 'subjects.id')
-        // ->select('id as exam_id', 'subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')
-        // ->where('subject_id', $subjectid)->where('end_time', '>=', now())->get();
+        ->where('end_time', '>=', now())
+        ->whereNotIn('exams.id', Student_result::select('exams_id')->where('student_id', $studentid->id))->get();
 
         if(is_null($exams) || !$exams->count()){
             return response()->json('No Exams Found', 404);
@@ -203,36 +236,37 @@ class StudentController extends Controller
     }
 
     public function getExamQuestions($studentcode, $examid){
-        $numberofquestions = DB::table('exams__questions')
-        ->select('exams_id', 'chapters_id', 'type', 'difficulty', 'Question_number')
-        ->where('exams_id', $examid)->get();
-        if(!is_null($numberofquestions) && $numberofquestions->count()){
-            $questions = collect();
-            foreach($numberofquestions as $value){
-                if($value->type == 'mcq'){
-                    $questionsfromdatabase = DB::table('mcqs')
-                    ->select(['id', 'chapters_id', 'difficulty', 'question_text', 'answer1', 'answer2', 'answer3', 'answer4', 'CorrectAnswer', DB::raw("'mcq' as type")])
-                    ->where('chapters_id', $value->chapters_id)
-                    ->where('difficulty', $value->difficulty)
-                    ->inRandomOrder()
-                    ->limit($value->Question_number)
-                    ->get();
-                    $questions->push($questionsfromdatabase);
-                }
-                elseif($value->type == 'true or false'){
-                    $questionsfromdatabase = DB::table('true_or_falses')
-                    ->select(['id', 'chapters_id', 'difficulty', 'question_text', 'CorrectAnswer',  DB::raw("'true or false' as type")])
-                    ->where('chapters_id', $value->chapters_id)
-                    ->where('difficulty', $value->difficulty)
-                    ->inRandomOrder()
-                    ->limit($value->Question_number)
-                    ->get();
-                    $questions->push($questionsfromdatabase);
-                }
-            }
-            return response()->json($questions->collapse(), 200);
-        }
-        return response()->json('Exam Questions Not Found', 404);
+        // $numberofquestions = DB::table('exams__questions')
+        // ->select('exams_id', 'chapters_id', 'type', 'difficulty', 'Question_number')
+        // ->where('exams_id', $examid)->get();
+
+        // if(!is_null($numberofquestions) && $numberofquestions->count()){
+        //     $questions = collect();
+        //     foreach($numberofquestions as $value){
+        //         if($value->type == 'mcq'){
+        //             $questionsfromdatabase = DB::table('mcqs')
+        //             ->select(['id', 'chapters_id', 'difficulty', 'question_text', 'answer1', 'answer2', 'answer3', 'answer4', 'CorrectAnswer', DB::raw("'mcq' as type")])
+        //             ->where('chapters_id', $value->chapters_id)
+        //             ->where('difficulty', $value->difficulty)
+        //             ->inRandomOrder()
+        //             ->limit($value->Question_number)
+        //             ->get();
+        //             $questions->push($questionsfromdatabase);
+        //         }
+        //         elseif($value->type == 'true or false'){
+        //             $questionsfromdatabase = DB::table('true_or_falses')
+        //             ->select(['id', 'chapters_id', 'difficulty', 'question_text', 'CorrectAnswer',  DB::raw("'true or false' as type")])
+        //             ->where('chapters_id', $value->chapters_id)
+        //             ->where('difficulty', $value->difficulty)
+        //             ->inRandomOrder()
+        //             ->limit($value->Question_number)
+        //             ->get();
+        //             $questions->push($questionsfromdatabase);
+        //         }
+        //     }
+        //     return response()->json($questions->collapse(), 200);
+        // }
+        // return response()->json('Exam Questions Not Found', 404);
     }
 
     public function PostExam(Request $request){

@@ -17,6 +17,7 @@ class CreateExamsTable extends Migration
         Schema::create('exams', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id();
+            $table->string('name');
             $table->foreignIdFor(Subject::class)->constrained()->onDelete('cascade');
             $table->dateTime('start_time', $precision = 0);
             $table->dateTime('end_time', $precision = 0);
