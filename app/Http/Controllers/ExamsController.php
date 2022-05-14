@@ -14,6 +14,7 @@ class ExamsController extends Controller
 
         $exam=new Exams();
         $exam->subject_id=$request->subject_id;
+        $exam->name=$request->name;
         $exam->start_time=$request->start_time;
         $exam->end_time=$request->end_time;
         $exam->duration_minutes=$request->duration_minutes;
