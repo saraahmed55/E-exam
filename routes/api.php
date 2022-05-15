@@ -57,6 +57,7 @@ Route::get('/students/{studentcode}/subject/{subjectid}/results', [StudentContro
 Route::get('/students/{studentcode}/results', [StudentController::class,'getStudentResults']);
 Route::get('/students/{studentcode}/subject/{subjectid}/exams', [StudentController::class,'getStudentSubjectExams']);
 Route::get('/students/{studentcode}/exams', [StudentController::class,'getStudentExams']);
+Route::get('/students/{studentcode}/getexaminfo/{examid}', [StudentController::class,'getExamInfo']);
 Route::get('/students/{studentcode}/getexam/{examid}', [StudentController::class,'getExamQuestions']);
 Route::post('/students/{studentcode}/saveresult', [StudentController::class,'PostExam']);
 

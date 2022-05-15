@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use App\Models\Exams;
+use App\Models\Chapters;
 use App\Models\Student_result;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -235,38 +236,46 @@ class StudentController extends Controller
         return response()->json($exams, 200);
     }
 
-    public function getExamQuestions($studentcode, $examid){
-        // $numberofquestions = DB::table('exams__questions')
-        // ->select('exams_id', 'chapters_id', 'type', 'difficulty', 'Question_number')
-        // ->where('exams_id', $examid)->get();
+    public function getExamInfo($studentcode, $examid){
 
-        // if(!is_null($numberofquestions) && $numberofquestions->count()){
-        //     $questions = collect();
-        //     foreach($numberofquestions as $value){
-        //         if($value->type == 'mcq'){
-        //             $questionsfromdatabase = DB::table('mcqs')
-        //             ->select(['id', 'chapters_id', 'difficulty', 'question_text', 'answer1', 'answer2', 'answer3', 'answer4', 'CorrectAnswer', DB::raw("'mcq' as type")])
-        //             ->where('chapters_id', $value->chapters_id)
-        //             ->where('difficulty', $value->difficulty)
-        //             ->inRandomOrder()
-        //             ->limit($value->Question_number)
-        //             ->get();
-        //             $questions->push($questionsfromdatabase);
-        //         }
-        //         elseif($value->type == 'true or false'){
-        //             $questionsfromdatabase = DB::table('true_or_falses')
-        //             ->select(['id', 'chapters_id', 'difficulty', 'question_text', 'CorrectAnswer',  DB::raw("'true or false' as type")])
-        //             ->where('chapters_id', $value->chapters_id)
-        //             ->where('difficulty', $value->difficulty)
-        //             ->inRandomOrder()
-        //             ->limit($value->Question_number)
-        //             ->get();
-        //             $questions->push($questionsfromdatabase);
-        //         }
-        //     }
-        //     return response()->json($questions->collapse(), 200);
-        // }
-        // return response()->json('Exam Questions Not Found', 404);
+        $exam = DB::table('exams')->join('subjects', 'exams.subject_id', '=', 'subjects.id')
+        ->select('exams.id as exam_id', 'exams.name as exam_name', 'subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')
+        ->where('exams.id', $examid)->first();
+
+        if(is_null($exam)){
+            return response()->json('No Exams Found', 404);
+        }
+
+        return response()->json($exam, 200);
+    }
+
+    public function getExamQuestions($studentcode, $examid){
+        $subject_id = DB::table('exams')
+        ->select('subject_id')
+        ->where('exams.id', $examid)->first();
+        $numberofquestions = DB::table('exams')
+        ->select('exams.id', 'mcq_easy_questionsNumber', 'mcq_medium_questionsNumber', 'mcq_hard_questionsNumber', 'tf_easy_questionsNumber', 'tf_medium_questionsNumber', 'tf_hard_questionsNumber')
+        ->where('exams.id', $examid)->first();
+
+        if(!is_null($numberofquestions)){
+            $questions = collect();
+            $easymcq=$this->getExamMcqsByDifficulty('easy', $numberofquestions->mcq_easy_questionsNumber, $subject_id->subject_id);
+            $questions->push($easymcq);
+            $mediummcq=$this->getExamMcqsByDifficulty('medium', $numberofquestions->mcq_medium_questionsNumber, $subject_id->subject_id);
+            $questions->push($mediummcq);
+            $hardmcq=$this->getExamMcqsByDifficulty('hard', $numberofquestions->mcq_hard_questionsNumber, $subject_id->subject_id);
+            $questions->push($hardmcq);
+
+            $easytf=$this->getExamTorFByDifficulty('easy', $numberofquestions->tf_easy_questionsNumber, $subject_id->subject_id);
+            $questions->push($easytf);
+            $mediumtf=$this->getExamTorFByDifficulty('medium', $numberofquestions->tf_medium_questionsNumber, $subject_id->subject_id);
+            $questions->push($mediumtf);
+            $hardtf=$this->getExamTorFByDifficulty('hard', $numberofquestions->tf_hard_questionsNumber, $subject_id->subject_id);
+            $questions->push($hardtf);
+
+            return response()->json($questions->collapse(), 200);
+        }
+        return response()->json('Exam Questions Not Found', 404);
     }
 
     public function PostExam(Request $request){
@@ -304,5 +313,27 @@ class StudentController extends Controller
             return response()->json('Can not save the result', 500);
         }
         return response()->json('Saved Successfully', 200);
+    }
+
+    public function getExamMcqsByDifficulty($difficulty, $number_of_questions, $subject_id){
+        $questionsfromdatabase = DB::table('mcqs')
+        ->select(['id', 'chapters_id', 'difficulty', 'question_text', 'answer1', 'answer2', 'answer3', 'answer4', 'CorrectAnswer', DB::raw("'mcq' as type")])
+        ->whereIn('chapters_id', Chapters::select('id')->where('subject_id', $subject_id))
+        ->where('difficulty', $difficulty)
+        ->inRandomOrder()
+        ->limit($number_of_questions)
+        ->get();
+        return $questionsfromdatabase;
+    }
+
+    public function getExamTorFByDifficulty($difficulty, $number_of_questions, $subject_id){
+        $questionsfromdatabase = DB::table('true_or_falses')
+        ->select(['id', 'chapters_id', 'difficulty', 'question_text', DB::raw("'true' as answer1"),DB::raw("'false' as answer2"), 'CorrectAnswer',  DB::raw("'true or false' as type")])
+        ->whereIn('chapters_id', Chapters::select('id')->where('subject_id', $subject_id))
+        ->where('difficulty', $difficulty)
+        ->inRandomOrder()
+        ->limit($number_of_questions)
+        ->get();
+        return $questionsfromdatabase;
     }
 }
