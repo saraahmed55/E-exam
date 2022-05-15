@@ -14,6 +14,7 @@ class ExamsController extends Controller
 
         $exam=new Exams();
         $exam->subject_id=$request->subject_id;
+        $exam->name=$request->name;
         $exam->start_time=$request->start_time;
         $exam->end_time=$request->end_time;
         $exam->duration_minutes=$request->duration_minutes;
@@ -31,7 +32,7 @@ class ExamsController extends Controller
     public function index(){
 
         $exams = DB::table('exams')->join('subjects', 'subjects.id', '=', 'exams.subject_id')
-        ->select('exams.id as exam_id', 'subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')->get();
+        ->select('exams.id as exam_id','exams.name as name', 'subjects.name as subject', 'start_time', 'end_time', 'duration_minutes')->get();
         if(is_null($exams) || !$exams->count()){
             return response()->json('No Exams Found', 404);
         }
@@ -42,7 +43,7 @@ class ExamsController extends Controller
     public function getExamsBySubject($subject_id){
 
         $exams = DB::table('exams')->join('subjects', 'subjects.id', '=', 'exams.subject_id')
-        ->select('exams.id as exam_id', 'start_time', 'end_time', 'duration_minutes')
+        ->select('exams.id as exam_id','name', 'start_time', 'end_time', 'duration_minutes')
         ->where('exams.subject_id', $subject_id)->get();
         if(is_null($exams) || !$exams->count()){
             return response()->json('No Exams Found', 404);
@@ -57,6 +58,18 @@ class ExamsController extends Controller
         ->select('mcq_easy_questionsNumber', 'mcq_medium_questionsNumber', 'mcq_hard_questionsNumber', 'tf_easy_questionsNumber', 'tf_medium_questionsNumber', 'tf_hard_questionsNumber')
         ->where('exams.id', $exam_id)->get();
         if(is_null($exams) || !$exams->count()){
+            return response()->json('No Exams Found', 404);
+        }
+
+        return response()->json($exams, 200);
+    }
+
+    public function getExamsInformation($prof_code,$exam_id){
+
+        $exams=DB::table('exams')->select('start_time','end_time','duration_minutes','mcq_easy_questionsNumber', 'mcq_medium_questionsNumber', 'mcq_hard_questionsNumber', 'tf_easy_questionsNumber', 'tf_medium_questionsNumber', 'tf_hard_questionsNumber')
+        ->where('exams.id',$exam_id)->get();
+
+        if(is_null($exams)|| !$exams->count()){
             return response()->json('No Exams Found', 404);
         }
 
