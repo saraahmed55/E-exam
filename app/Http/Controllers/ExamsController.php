@@ -15,8 +15,8 @@ class ExamsController extends Controller
         $exam=new Exams();
         $exam->subject_id=$request->subject_id;
         $exam->name=$request->name;
-        $exam->start_time=$request->start_time;
-        $exam->end_time=$request->end_time;
+        $exam->start_time=date("Y-m-d H:i:s", strtotime($request->start_time));
+        $exam->end_time=date("Y-m-d H:i:s", strtotime($request->end_time));
         $exam->duration_minutes=$request->duration_minutes;
         $exam->mcq_easy_questionsNumber=$request->mcq_easy_questionsNumber;
         $exam->mcq_medium_questionsNumber=$request->mcq_medium_questionsNumber;
