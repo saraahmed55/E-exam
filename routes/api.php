@@ -125,7 +125,7 @@ Route::delete('/admin/deletedepartment/{department_id}', [DepartmentsController:
 
 Route::get('/admin/exams', [ExamsController::class,'index']);
 Route::get('/admin/exams/{exam_id}/students_results', [StudentResultController::class,'getAllresultsOfExam']);
-Route::delete('/admin/exams/{exam_id}/students_results/deleteResult/{student_result_id}', [StudentResultController::class,'destroy']);
+Route::delete('/admin/students_results/deleteResult/{student_result_id}', [StudentResultController::class,'destroy']);
 Route::get('/admin/subjects/{subject_id}/exams', [ExamsController::class,'getExamsBySubject']);
 Route::get('/admin/results', [StudentResultController::class,'getAvgResults']);
 
