@@ -40,8 +40,7 @@ class StudentResultController extends Controller
     return response()->json($results, 200);
    }
 
-   public function destroy($result_id)
-    {
+   public function destroy($result_id){
         $result= Student_result::find($result_id);
         if(is_null($result)){
             return response()->json('Result not Found', 404);
@@ -49,4 +48,20 @@ class StudentResultController extends Controller
         $result->delete();
         return response()->json('Deleted Successfully', 200);
     }
+
+    public function AvrgResults(){
+        $avg = DB::table('student_results')
+        ->selectRaw('exams_id,avg(result) as avg_result')->groupBy('exams_id')->get();
+        if(is_null($avg)){
+            return response()->json('Average not Found', 404);
+        }
+        return response()->json($avg,200);
+    }
+
+
+
+
+
+
+
 }

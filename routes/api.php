@@ -127,7 +127,9 @@ Route::get('/admin/exams', [ExamsController::class,'index']);
 Route::get('/admin/exams/{exam_id}/students_results', [StudentResultController::class,'getAllresultsOfExam']);
 Route::delete('/admin/students_results/deleteResult/{student_result_id}', [StudentResultController::class,'destroy']);
 Route::get('/admin/subjects/{subject_id}/exams', [ExamsController::class,'getExamsBySubject']);
-Route::get('/admin/results', [StudentResultController::class,'getAvgResults']);
+Route::get('/admin/results', [StudentResultController::class,'AvrgResults']);
+Route::get('/admin/getExamsNames', [ExamsController::class,'getAllExamsNames']);
+
 
 Route::get('/admin/user_roles', [AdminRoleController::class,'index']);
 Route::get('/admin/user_roles/admins', [ProfessorController::class,'getAdminProfessors']);
