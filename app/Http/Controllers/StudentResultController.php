@@ -14,7 +14,7 @@ class StudentResultController extends Controller
         $subjectsavg = collect();
         foreach($avg as $average){
             $subject = DB::table('exams')->leftJoin('subjects', 'exams.subject_id', '=', 'subjects.id')
-            ->select('name')->where('exams.id', $average->exams_id)->first();
+            ->select('subjects.name')->where('exams.id', $average->exams_id)->first();
             $avgobject = [
                 'subject'=> $subject->name,
                 'exams_id' => $average->exams_id,
