@@ -75,4 +75,14 @@ class ExamsController extends Controller
 
         return response()->json($exams, 200);
     }
+
+    public function getAllExamsNames(){
+        $exams=DB::table('exams')->select('name')->pluck('name');
+
+        if(is_null($exams)|| !$exams->count()){
+            return response()->json('No Exams Found', 404);
+        }
+
+        return response()->json_encode($exams);
+    }
 }
