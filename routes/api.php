@@ -13,14 +13,12 @@ use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\DepartmentsController;
+use App\Http\Controllers\LevelSubjectsController;
 use App\Http\Controllers\McqController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\StudentResultController;
 use App\Http\Controllers\TrueOrFalseController;
-use App\Models\AdminRole;
-use App\Models\Department;
-use App\Models\Student_result;
-use App\Models\TrueOrFalse;
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -102,7 +100,8 @@ Route::post('/professors/{prof_code}/subject/{subjectid}/createexam', [ExamsCont
 Route::post('/professors/{prof_code}/subject/{subjectid}/createchapter', [ChaptersController::class,'store']);
 Route::post('/professors/{prof_code}/subject/{subjectid}/createsujects', [SubjectController::class,'store']);
 
-
+Route::get('/admin/{prof_id}/subjects', [ProfessorController::class,'getProfessorSubjectsInAdmin']);
+Route::delete('/admin/deletelevelsubject/{subject_id}', [LevelSubjectsController::class,'destroy']);
 Route::get('/admin/subjects', [SubjectController::class,'index']);
 Route::get('/admin/subjects/{subject_id}', [SubjectController::class,'getByID']);
 Route::post('/admin/addsubject', [SubjectController::class,'store']);
@@ -122,6 +121,8 @@ Route::post('/admin/adddepartment', [DepartmentsController::class,'store']);
 Route::get('/admin/departments/{department_id}', [DepartmentsController::class,'getByID']);
 Route::put('/admin/editdepartment/{department_id}', [DepartmentsController::class,'update']);
 Route::delete('/admin/deletedepartment/{department_id}', [DepartmentsController::class,'destroy']);
+
+Route::post('/admin/addSubjectToProfessor', [LevelSubjectsController::class,'store']);
 
 Route::get('/admin/exams', [ExamsController::class,'index']);
 Route::get('/admin/exams/{exam_id}/students_results', [StudentResultController::class,'getAllresultsOfExam']);

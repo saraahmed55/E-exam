@@ -153,6 +153,17 @@ class ProfessorController extends Controller
         return response()->json($subjects, 200);
     }
 
+    public function getProfessorSubjectsInAdmin($prof_id){
+
+        $subjects = DB::table('level_subjects')->join('subjects', 'subjects.id', '=', 'level_subjects.subject_id')
+        ->select('subjects.id', 'subjects.name')->where('professor_id',$prof_id)->get();
+
+        if(is_null($subjects) || !$subjects->count()){
+            return response()->json('No Subjects Found', 404);
+        }
+
+        return response()->json($subjects, 200);
+    }
 
     public function getProfessorSubjectExams($prof_code, $subjectid){
 
@@ -270,7 +281,6 @@ class ProfessorController extends Controller
         return response()->json($results, 200);
     }
 
-
     public function getAdminProfessors(){
         $admins = DB::table('professors')->select('id', 'first_name', 'last_name')->where('roles_id', 1)->get();
 
@@ -314,5 +324,6 @@ class ProfessorController extends Controller
         }
         return response()->json('Can not Edit the Professor Role', 400);
     }
+
 
 }
