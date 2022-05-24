@@ -156,4 +156,9 @@ Route::post('/admin/addprofessor', [ProfessorController::class,'store']);
 Route::put('/admin/editprofessor/{professor_id}', [ProfessorController::class,'update']);
 Route::delete('/admin/deleteprofessor/{professor_id}', [ProfessorController::class,'destroy']);
 
+
+Route::get('/admin/StudentCount', [StudentController::class,'getCountOfStudents']);
+Route::get('/admin/professorCount', [StudentController::class,'getCountOfprofessor']);
+Route::get('/admin/examsCount', [StudentController::class,'getCountOfExams']);
+
 Route::get('/logout', [LoginController::class,'logout']);

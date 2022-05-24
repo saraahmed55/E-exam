@@ -337,4 +337,17 @@ class StudentController extends Controller
         ->get();
         return $questionsfromdatabase;
     }
+
+    public function getCountOfStudents(){
+        $students=DB::table('students')->select('id')->count();
+        return response()->json($students, 200);
+    }
+    public function getCountOfprofessor(){
+        $professors=DB::table('professors')->select('id')->count();
+        return response()->json($professors, 200);
+    }
+    public function getCountOfExams(){
+        $exams=DB::table('exams')->select('id')->count();
+        return response()->json($exams, 200);
+    }
 }
