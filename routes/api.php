@@ -24,12 +24,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::middleware('auth:professor')->group(function () {
-
-// });
-// Route::middleware('auth:student')->group(function () {
-
-// });
 
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -160,5 +154,7 @@ Route::delete('/admin/deleteprofessor/{professor_id}', [ProfessorController::cla
 Route::get('/admin/StudentCount', [StudentController::class,'getCountOfStudents']);
 Route::get('/admin/professorCount', [StudentController::class,'getCountOfprofessor']);
 Route::get('/admin/examsCount', [StudentController::class,'getCountOfExams']);
+Route::get('/admin/questionsCount', [StudentController::class,'getCountOfQuestions']);
+
 
 Route::get('/logout', [LoginController::class,'logout']);

@@ -350,4 +350,10 @@ class StudentController extends Controller
         $exams=DB::table('exams')->select('id')->count();
         return response()->json($exams, 200);
     }
+    public function getCountOfQuestions(){
+        $mcqs=DB::table('mcqs')->select('id')->count();
+        $trueOrFalse=DB::table('true_or_falses')->select('id')->count();
+        $total = $mcqs + $trueOrFalse;
+        return response()->json($total, 200);
+    }
 }
