@@ -318,7 +318,7 @@ class StudentController extends Controller
 
     public function getExamMcqsByDifficulty($difficulty, $number_of_questions, $subject_id){
         $questionsfromdatabase = DB::table('mcqs')
-        ->select(['id', 'chapters_id', 'difficulty', 'question_text', 'answer1', 'answer2', 'answer3', 'answer4', 'CorrectAnswer', DB::raw("'mcq' as type")])
+        ->select(['id', 'chapters_id', 'difficulty', 'question_text', 'answer1', 'answer2', 'answer3', 'answer4', 'CorrectAnswer','grade', DB::raw("'mcq' as type")])
         ->whereIn('chapters_id', Chapters::select('id')->where('subject_id', $subject_id))
         ->where('difficulty', $difficulty)
         ->inRandomOrder()
@@ -329,7 +329,7 @@ class StudentController extends Controller
 
     public function getExamTorFByDifficulty($difficulty, $number_of_questions, $subject_id){
         $questionsfromdatabase = DB::table('true_or_falses')
-        ->select(['id', 'chapters_id', 'difficulty', 'question_text', DB::raw("'true' as answer1"),DB::raw("'false' as answer2"), 'CorrectAnswer',  DB::raw("'true or false' as type")])
+        ->select(['id', 'chapters_id', 'difficulty', 'question_text', DB::raw("'true' as answer1"),DB::raw("'false' as answer2"), 'CorrectAnswer','grade',  DB::raw("'true or false' as type")])
         ->whereIn('chapters_id', Chapters::select('id')->where('subject_id', $subject_id))
         ->where('difficulty', $difficulty)
         ->inRandomOrder()

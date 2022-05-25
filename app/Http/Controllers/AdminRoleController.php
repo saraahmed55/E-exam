@@ -66,7 +66,8 @@ class AdminRoleController extends Controller
         }
 
         $professors = DB::table('professors')->join('roles', 'roles.id', '=', 'professors.roles_id')
-        ->select('professors.id','professors.first_name','professors.last_name','professors.prof_code','professors.email')->where('roles_id',$role_id)->get();
+        ->join('departments', 'departments.id', '=', 'professors.department_id')
+        ->select('professors.id','professors.first_name','professors.last_name','professors.prof_code','professors.email', 'departments.name as department_name')->where('roles_id',$role_id)->get();
 
         if(is_null($professors) || !$professors->count()){
             return response()->json('No Professors Found', 404);
