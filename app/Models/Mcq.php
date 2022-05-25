@@ -18,6 +18,7 @@ class Mcq extends Model
         'answer2',
         'answer3',
         'answer4',
+        'grade',
         'CorrectAnswer'
     ];
 

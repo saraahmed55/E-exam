@@ -13,7 +13,7 @@ class McqController extends Controller
 
     public function index()
     {
-        $mcqs = DB::table('mcqs')->select('id','difficulty', 'question_text','answer1','answer2','answer3','answer4','CorrectAnswer')->get();
+        $mcqs = DB::table('mcqs')->select('id','difficulty', 'question_text','answer1','answer2','answer3','answer4','grade','CorrectAnswer')->get();
         if(is_null($mcqs) || !$mcqs->count()){
             return response()->json('No Questions Found', 404);
         }
@@ -32,6 +32,7 @@ class McqController extends Controller
         $question_mcq->answer3=$request->answer3;
         $question_mcq->answer4=$request->answer4;
         $question_mcq->CorrectAnswer=$request->CorrectAnswer;
+        $question_mcq->grade=$request->grade;
         if($question_mcq->save()) {
             return ['status'=>'data inserted'];
         }
@@ -39,7 +40,7 @@ class McqController extends Controller
 
     public function getByID($prof_code,$subject_id,$chapter_id,$question_id){
         $mcqs =  DB::table('mcqs')
-        ->select('mcqs.id','difficulty','question_text','answer1','answer2','answer3','answer4','CorrectAnswer')
+        ->select('mcqs.id','difficulty','question_text','answer1','answer2','answer3','answer4','grade','CorrectAnswer')
         ->where('id', $question_id)->first();
         if(is_null($mcqs)){
             return response()->json('mcqs not Found', 404);
@@ -54,6 +55,7 @@ class McqController extends Controller
             'answer2'=>'required',
             'answer3'=>'required',
             'answer4'=>'required',
+            'grade'=>'required',
 
         ]);
         if($validator->fails()){
@@ -71,6 +73,7 @@ class McqController extends Controller
         $question->answer3 = $request->answer3;
         $question->answer4 = $request->answer4;
         $question->CorrectAnswer = $request->CorrectAnswer;
+        $question->grade=$request->grade;
 
         if($question->save()) {
             return response()->json('Updated Successfully', 200);

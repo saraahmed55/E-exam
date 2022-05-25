@@ -13,6 +13,7 @@ class TrueOrFalse extends Model
         'chapters_id',
         'difficulty',
         'question_text',
+        'grade',
         'CorrectAnswer'
     ];
 

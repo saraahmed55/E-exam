@@ -20,6 +20,7 @@ class Professor extends Authenticatable
         'last_name',
         'roles_id',
         'email',
+        'department_id',
         'password',
     ];
 

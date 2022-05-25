@@ -24,12 +24,13 @@ class CreateMcqsTable extends Migration
             $table->string('answer2');
             $table->string('answer3');
             $table->string('answer4');
+            $table->integer('grade')->default(1);
             $table->enum('CorrectAnswer', ['answer1','answer2', 'answer3', 'answer4']);
             $table->timestamps();
         });
     }
 
-    /** 
+    /**
      *
      * @return void
      */

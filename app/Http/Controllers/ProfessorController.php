@@ -15,8 +15,8 @@ class ProfessorController extends Controller
 {
 
     public function index(){
-        $professors = DB::table('professors')
-        ->select('id', 'prof_code', 'first_name', 'last_name','email')->get();
+        $professors = DB::table('professors')->join('departments', 'departments.id', '=', 'professors.department_id')
+        ->select('professors.id as id', 'prof_code', 'first_name', 'last_name','email', 'departments.name as department_name')->get();
         if(is_null($professors) || !$professors->count()){
             return response()->json('No Professors Found', 404);
         }
@@ -26,7 +26,7 @@ class ProfessorController extends Controller
 
     public function getByID($professor_id){
         $professor =  DB::table('professors')
-        ->select('professors.id', 'prof_code', 'first_name', 'last_name', 'roles_id', 'email','password')
+        ->select('professors.id', 'prof_code', 'first_name', 'department_id','last_name', 'roles_id', 'email','password')
         ->where('id', $professor_id)->first();
         if(is_null($professor)){
             return response()->json('Professor not Found', 404);
@@ -52,6 +52,7 @@ class ProfessorController extends Controller
             'last_name'=> 'required|string|max:255',
             'prof_code'=>'required|min:6|unique:professors',
             'email' => 'required|string|email|max:255|unique:professors',
+            'department_id' => 'required',
             'password' => 'required|string|min:6',
         ]);
         if($validator->fails()){
@@ -62,6 +63,7 @@ class ProfessorController extends Controller
             'last_name' => $request->last_name,
             'prof_code'=>$request->prof_code,
             'email' => $request->email,
+            'department_id'=>$request->department_id,
             'password' => Hash::make($request->password),
         ]);
             return response()->json('Added Successfully', 200);
@@ -74,6 +76,7 @@ class ProfessorController extends Controller
             'first_name'=> 'required',
             'last_name'=> 'required',
             'email'=> 'required|email',
+            'department_id' => 'required',
             'password'=> 'required'
         ]);
         if($validator->fails()){
@@ -88,6 +91,7 @@ class ProfessorController extends Controller
         $professor->first_name = $request->first_name;
         $professor->last_name = $request->last_name;
         $professor->email = $request->email;
+        $professor->department_id=$request->department_id;
         $professor->password = Hash::make($request->password);
         if($professor->save()) {
             return response()->json('Updated Successfully', 200);

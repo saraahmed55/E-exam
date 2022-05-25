@@ -16,8 +16,8 @@ class StudentController extends Controller
 {
 
     public function index(){
-        $students = DB::table('students')
-        ->select('id', 'student_code', 'first_name', 'last_name', 'level','department_id','email')->get();
+        $students = DB::table('students')->join('departments', 'departments.id', '=', 'students.department_id')
+        ->select('students.id as id', 'student_code', 'first_name', 'last_name', 'level','departments.name as department_name','email')->get();
 
         if(is_null($students) || !$students->count()){
             return response()->json('No Students Found', 404);

@@ -20,6 +20,7 @@ class CreateTrueOrFalsesTable extends Migration
             $table->foreignIdFor(Chapters::class)->constrained()->onDelete('cascade');
             $table->enum('difficulty', ['easy','medium', 'hard']);
             $table->string('question_text');
+            $table->integer('grade')->default(1);
             $table->enum('CorrectAnswer', ['true','false']);
             $table->timestamps();
         });

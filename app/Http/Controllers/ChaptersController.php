@@ -60,7 +60,7 @@ class ChaptersController extends Controller
     }
 
     public function getChapterMCQ($prof_code,$subject_id,$chapters_id){
-        $mcqs=DB::table('mcqs')->select('id as mcq_id','difficulty','question_text','answer1','answer2','answer3','answer4','CorrectAnswer')
+        $mcqs=DB::table('mcqs')->select('id as mcq_id','difficulty','question_text','answer1','answer2','answer3','answer4','grade','CorrectAnswer')
         ->where('chapters_id',$chapters_id)->get();
 
         if(is_null($mcqs) || !$mcqs->count()){
@@ -71,7 +71,7 @@ class ChaptersController extends Controller
     }
 
     public function getChapterTorF($prof_code,$subject_id,$chapters_id){
-        $TF=DB::table('true_or_falses')->select('id as tf_id','difficulty','question_text','CorrectAnswer')
+        $TF=DB::table('true_or_falses')->select('id as tf_id','difficulty','question_text','grade','CorrectAnswer')
         ->where('chapters_id',$chapters_id)->get();
 
         if(is_null($TF) || !$TF->count()){

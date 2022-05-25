@@ -13,7 +13,7 @@ class TrueOrFalseController extends Controller
 
     public function index()
     {
-        $true_or_falses = DB::table('true_or_falses')->select('id','difficulty', 'question_text','CorrectAnswer')->get();
+        $true_or_falses = DB::table('true_or_falses')->select('id','difficulty', 'question_text','grade','CorrectAnswer')->get();
         if(is_null($true_or_falses) || !$true_or_falses->count()){
             return response()->json('No Questions Found', 404);
         }
@@ -27,6 +27,7 @@ class TrueOrFalseController extends Controller
         $question_trueOrfalse->difficulty=$request->difficulty;
         $question_trueOrfalse->question_text=$request->question_text;
         $question_trueOrfalse->CorrectAnswer=$request->CorrectAnswer;
+        $question_trueOrfalse->grade=$request->grade;
         if($question_trueOrfalse->save()) {
             return ['status'=>'data inserted'];
         }
@@ -35,7 +36,7 @@ class TrueOrFalseController extends Controller
 
     public function getByID($prof_code,$subject_id,$chapter_id,$question_id){
         $mcqs =  DB::table('true_or_falses')
-        ->select('true_or_falses.id','difficulty','question_text','CorrectAnswer')
+        ->select('true_or_falses.id','difficulty','question_text','grade','CorrectAnswer')
         ->where('id', $question_id)->first();
         if(is_null($mcqs)){
             return response()->json('true_or_falses not Found', 404);
@@ -58,6 +59,8 @@ class TrueOrFalseController extends Controller
         $question->difficulty = $request->difficulty;
         $question->question_text = $request->question_text;
         $question->CorrectAnswer = $request->CorrectAnswer;
+        $question->grade=$request->grade;
+
 
         if($question->save()) {
             return response()->json('Updated Successfully', 200);
